@@ -1,7 +1,7 @@
 	<?php
 
 //
-//	Copyright (c) 2014-2018, Emory University
+//	Copyright (c) 2014-2019, Emory University
 //	All rights reserved.
 //
 //	Redistribution and use in source and binary forms, with or without modification, are
@@ -37,8 +37,6 @@
 	$featureFile = $_POST['feature'];
 	$boundaryDir = $_POST['boundary'];
 
-	//write_log("INFO","project Directory".$projectDirectory);
-
 	// empty check for dataset name
 	if( empty($datasetName) ) {
 		echo "<script type='text/javascript'>window.alert('Dataset name is empty !! ');
@@ -47,10 +45,11 @@
 	}
 
 	// check if dataset name exists
-	$dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
+	// $dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
+	$dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
 
 	if( !$dbConn ) {
-		echo("<p>Unable to connect to the database server</p>" . mysqli_connect_error() );
+		echo("<p>Unable to connect to the first database server</p>" . mysqli_connect_error() );
 		exit;
 	}
 
@@ -71,16 +70,14 @@
 		exit;
 	}
 
-	// should be changed into ../userdata/
 	$boundaryFile = 'boundarieZ.txt';
 	$pathToboundaryFile = $projectDirectory.'/'.$boundaryFile;
-	//$pyramidSel = $_POST['pyramidSel'];
-	//$pathTopyramidsInfo = '../userdata/'.$pyramidSel;
 
 
 	/************	Start checking and removing slide name for boundaries ************/
 
-	$dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
+$dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
+// $dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
 	if( !$dbConn ) {
 		echo("<p>Unable to connect to the database server</p>" . mysqli_connect_error() );
 		exit;
@@ -113,7 +110,8 @@
 	// remove duplicated slides from sregionboundaries
 	// dataset name check
 
-	$dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
+	$dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
+	// $dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
 	if( !$dbConn ) {
 		echo("<p>Unable to connect to the database server</p>" . mysqli_connect_error() );
 		exit;
@@ -134,7 +132,7 @@
 	$newslidelist = array();
 	$link = mysqli_init();
 	mysqli_options($link, MYSQLI_OPT_LOCAL_INFILE, true);
-	mysqli_real_connect($link, $dbAddress, $guestAccount, $guestPass, "nuclei");
+	mysqli_real_connect($link, "localhost", $guestAccount, $guestPass, "nuclei");
 
 	$sql = 'SELECT name, id FROM slides';
 
@@ -161,13 +159,12 @@
 	}
 
 	/************	End existing slide name check ************/
-
 	// if new slide list exists, import slide information
 	// this should be fixed later if new slide includes current slides.
 	if(count($newslidelist) > 0){
 		$link = mysqli_init();
 		mysqli_options($link, MYSQLI_OPT_LOCAL_INFILE, true);
-		mysqli_real_connect($link, $dbAddress, $guestAccount, $guestPass, "nuclei");
+		mysqli_real_connect($link, "localhost", $guestAccount, $guestPass, "nuclei");
 
 		$sql = 'LOAD DATA LOCAL INFILE "'.$projectDirectory.'/'.$slideInfoFile.'"
 				INTO TABLE slides fields terminated by \',\' lines
@@ -201,8 +198,12 @@
 
 	/************	Start dataset importing************/
 
+	$out = $guestAccount.' '.$guestPass.' '.$datasetName.' '.$_POST['project'].'/'.$featureFile.' '.$projectDirectory.'/slidelist.txt';
+
 	// add datasets and dataset_slides tables
-	$result = shell_exec('python ../scripts/create_dataset_importtab.py '.escapeshellarg($dbAddress).' '.escapeshellarg($guestAccount).' '.escapeshellarg($guestPass).' '.escapeshellarg($datasetName).' '.$_POST['project'].'/'.escapeshellarg($featureFile).' '.escapeshellarg($projectDirectory.'/slidelist.txt'));
+	$result = shell_exec('python ../scripts/create_dataset_importtab.py '.escapeshellarg("localhost").' '.escapeshellarg($guestAccount).' '.escapeshellarg($guestPass).' '.escapeshellarg($datasetName).' '.$_POST['project'].'/'.escapeshellarg($featureFile).' '.escapeshellarg($projectDirectory.'/slidelist.txt'));
+
+	write_log("INFO"," Directory".$out);
 
 	if( $result != 0 ) {
 		echo "<script type='text/javascript'>window.alert('Dataset: Cannot import dataset to database !! ');

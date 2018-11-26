@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-#	Copyright (c) 2014-2017, Emory University
+#	Copyright (c) 2014-2019, Emory University
 #	All rights reserved.
 #
 #	Redistribution and use in source and binary forms, with or without modification, are
@@ -26,8 +26,7 @@
 #
 import sys
 import string
-import MySQLdb as mysql
-import getpass as pw
+import mysql.connector as mysql
 
 
 if len(sys.argv) != 7:
@@ -41,22 +40,21 @@ dataset = sys.argv[4]
 featuresFile = sys.argv[5]
 slideListFile = sys.argv[6]
 
-db = mysql.connect(host=dbAddress, user=userId, passwd=passWord, db="nuclei")
+db = mysql.connect(host=dbAddress, user=userId, passwd=passWord, database="nuclei")
 cursor = db.cursor()
 
 #
 #	Create dataset
 #
 try:
-	cursor.execute("INSERT into datasets (name, features_file) VALUES(%s, %s)", (dataset, featuresFile))
+	sql = "INSERT INTO datasets (name, features_file, superpixel_size) VALUES (%s, %s, %s)"
+	val = (dataset, featuresFile, 8)
+	cursor.execute(sql, val)
 	db.commit()
 
-except mysql.Error, e:
+except mysql.Error as err:
 
-	if db:
-		db.rollback()
-
-	print "Error %d: %s" % (e.args[0], e.args[1])
+	print("Something went wrong: {}".format(err))
 	sys.exit(3)
 
 
@@ -80,9 +78,10 @@ for slide in slideList:
 		cursor.execute("INSERT INTO dataset_slides (slide_id, dataset_id) VALUES(%s, %s)", (row[0], datasetId))
 		db.commit()
 
-	except:
-		if db:
-			db.rollback()
+	except mysql.Error as err:
+
+		print("Something went wrong: {}".format(err))
+		sys.exit(3)
 
 
 
