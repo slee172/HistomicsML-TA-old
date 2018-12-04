@@ -17,7 +17,8 @@ class label():
 
 	def setData(self, q):
 		self.uid = q["uid"]
-		self.trainSet = '/localdata/classifiers/' + str(q["trainset"]) + '.h5'
+		self.trainSet = '/localdata/classifiers/' + str(q["trainset"])
+		self.classifier = str(q["trainset"])
 		self.dataSet = str(q["dataset"])
 		self.slide = str(q["slide"])
 		self.left = int(q["left"])

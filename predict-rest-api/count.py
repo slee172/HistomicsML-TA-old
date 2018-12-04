@@ -13,6 +13,7 @@ class count():
 	def setData(self, q):
 		self.uid = q["uid"]
 		self.trainSet = '/localdata/classifiers/' + str(q["trainset"]) + '.h5'
+		self.classifier = str(q["trainset"])
 		self.dataSet = str(q["dataset"])
 		self.inFile = '/localdata/classifiers/tmp/' + str(q["trainset"]) + '_' + self.dataSet.split('/')[1] + '.csv'
 		self.outFile = 'trainingsets/tmp/' + str(q["trainset"]) + '_' + self.dataSet.split('/')[1] + '.csv'
