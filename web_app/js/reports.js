@@ -38,7 +38,8 @@ $(function() {
 
 	var	datasetslideSummary = $("#datasetSel"), trainsetSel = $("#trainsetSel"),
 		downloadsetSel = $("#downloadsetSel"), datasetpredictDataset = $("#applyDatasetSel"),
-		datasetpredictSlide = $('#datasetMapSel'), datasetLabel = $("#datasetLabelSel");
+		datasetpredictSlide = $('#datasetMapSel'), datasetLabel = $("#datasetLabelSel"),
+		maskTrainSel = $('#trainsetLabelSel');
 
 	// document.getElementById("index").setAttribute("href","index.html");
 	document.getElementById("home").setAttribute("href","index_home.html?application="+application);
@@ -68,7 +69,7 @@ $(function() {
 			updateTrainSets(curDataset[0]);
 			updateSlideList();
 			updateTrainSetsforPredictDataset(curDataset[0]);
-			updateTrainSetsforLabel(curDataset[0]);
+			// updateTrainSetsforLabel(curDataset[0]);
 			updateSlideListForLabel(curDataset[0]);
 		}
 	});
@@ -82,6 +83,7 @@ $(function() {
 		success: function(data) {
 			for( var item in data ) {
 				downloadsetSel.append(new Option(data[item][0], data[item][1]));
+				maskTrainSel.append(new Option(data[item][0], data[item][1]));
 			}
 		}
 	});
@@ -243,7 +245,7 @@ function updatepredictDataset() {
 function updateLabel() {
 	var sel = document.getElementById('datasetLabelSel'),
 			  dataset = sel.options[sel.selectedIndex].label;
-	updateTrainSetsforLabel(dataset);
+	// updateTrainSetsforLabel(dataset);
 	updateSlideListForLabel(dataset);
 }
 
@@ -368,25 +370,25 @@ function updateSlideSize() {
 
 
 
-function updateTrainSetsforLabel(dataSet) {
-
-	$.ajax({
-		type: "POST",
-		url: "db/getTrainsetForDataset.php",
-		data: { dataset: dataSet },
-		dataType: "json",
-		success: function(data) {
-
-			var	reloadTrainSel = $("#trainsetLabelSel");
-			$("#trainsetLabelSel").empty();
-
-			for( var item in data.trainingSets ) {
-				reloadTrainSel.append(new Option(data.trainingSets[item], data.trainingSets[item]));
-			}
-		}
-	});
-
-}
+// function updateTrainSetsforLabel(dataSet) {
+//
+// 	$.ajax({
+// 		type: "POST",
+// 		url: "db/getTrainsetForDataset.php",
+// 		data: { dataset: dataSet },
+// 		dataType: "json",
+// 		success: function(data) {
+//
+// 			var	reloadTrainSel = $("#trainsetLabelSel");
+// 			$("#trainsetLabelSel").empty();
+//
+// 			for( var item in data.trainingSets ) {
+// 				reloadTrainSel.append(new Option(data.trainingSets[item], data.trainingSets[item]));
+// 			}
+// 		}
+// 	});
+//
+// }
 
 
 //
