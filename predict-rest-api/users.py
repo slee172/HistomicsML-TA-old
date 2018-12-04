@@ -33,9 +33,15 @@ class Users():
 			if idx == uidx:
 				for i in range(object_num):
 					# init sample
-					init_sample = {'id': 0, 'f_idx': 0, 'aurl':0, 'feature':0, 'label':0, 'iteration':0, 'centX':0, 'centY':0, 'slideIdx':0, 'slide':0}
+					init_sample = dict(
+						id=0, checkpoints=0, f_idx=0, aurl=0, feature=0,
+						label=0, iteration=0, centX=0, centY=0,
+						slideIdx=0, slide=None
+					)
+					# {'id': 0, 'f_idx': 0, 'aurl':0, 'feature':0, 'label':0, 'iteration':0, 'centX':0, 'centY':0, 'slideIdx':0, 'slide':0}
 					# add feature
 					init_sample['id'] = c['db_id'][:][i, 0]
+					init_sample['checkpoints'] = c['checkpoints'][:][i, 0]
 					init_sample['aurl'] = c['augUrls'][:][i]
 					init_sample['slideIdx'] = c['slideIdx'][:][i, 0]
 					init_sample['slide'] = c['slides'][:][c['slideIdx'][:][i, 0]]
@@ -51,11 +57,15 @@ class Users():
 				a_idx = 0
 				for i in range(object_num):
 					# init sample and augment
-					init_augment = {'id': [], 'feature':[], 'label':[]}
+					init_augment = dict(
+						id=0, checkpoints=0, feature=0, label=0
+					)
+					# {'id': [], 'feature':[], 'label':[]}
 
 					a_featureSet = np.zeros((agen.AUG_BATCH_SIZE, self.FEATURE_DIM)).astype(np.float32)
 					a_labelSet = np.zeros((agen.AUG_BATCH_SIZE, )).astype(np.uint8)
 					a_idSet = []
+					a_checkpointSet = []
 
 					if c['augments_labels'][:][a_idx, 0] > 0:
 						a_labelSet.fill(1)
@@ -63,11 +73,13 @@ class Users():
 					for j in range(agen.AUG_BATCH_SIZE):
 
 						a_idSet.append(c['augments_db_id'][:][a_idx, 0])
+						a_checkpointSet.append(c['augments_checkpoints'][:][a_idx, 0])
 						a_featureSet[j, :] = c['augments_features'][:][a_idx]
 						a_idx += 1
 
 					# add feature
 					init_augment['id'] = a_idSet
+					init_augment['checkpoints'] = a_checkpointSet
 					init_augment['feature'] = a_featureSet
 					init_augment['label'] = a_labelSet
 
