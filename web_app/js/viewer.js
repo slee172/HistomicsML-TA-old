@@ -1317,6 +1317,7 @@ function retrain() {
 		viewJSON['id'] = uid;
 		viewJSON['uid'] = uid;
 		viewJSON['target'] = 'retrainView';
+		viewJSON['classifier'] = classifier;
 		viewJSON['dataset'] = datapath;
 		viewJSON['samples'] = fixes['samples'];
 		viewJSON['width'] = curWidth;
@@ -1365,6 +1366,7 @@ function retrain() {
 				viewJSON['id'] = uid;
 				viewJSON['uid'] = uid;
 				viewJSON['target'] = 'retrainHeatmap';
+				viewJSON['classifier'] = classifier;
 				viewJSON['samples'] = fixes['samples'];
 				viewJSON['dataset'] = datapath;
 				viewJSON['slide'] = curSlide;

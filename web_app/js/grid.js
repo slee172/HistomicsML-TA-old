@@ -698,6 +698,7 @@ function submitLabels() {
 	viewJSON['id'] = uid;
 	viewJSON['uid'] = uid;
 	viewJSON['target'] = 'train';
+	viewJSON['classifier'] = classifier;
 	viewJSON['dataset'] = datapath;
 	viewJSON['samples'] = sampleDataJson['samples'];
 	viewJSON['iteration'] = iteration;

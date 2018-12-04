@@ -830,6 +830,7 @@ function primeSession() {
 		viewJSON['id'] = uid;
 		viewJSON['uid'] = uid;
 		viewJSON['target'] = 'train';
+		viewJSON['classifier'] = classifier;
 		viewJSON['dataset'] = datapath;
 		viewJSON['samples'] = selectedJSON['samples'];
 		viewJSON['iteration'] = iteration;
