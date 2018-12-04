@@ -45,6 +45,7 @@ class Save():
 		features = np.zeros((sample_num, self.FEATURE_DIM), dtype=np.float32)
 		labels = np.zeros((sample_num, 1), dtype=np.int32)
 		db_id = np.zeros((sample_num, 1), dtype=np.int32)
+		checkpoints = np.zeros((sample_num, 1), dtype=np.int32)
 		f_idx = np.zeros((sample_num, 1), dtype=np.int32)
 		sample_iter = np.zeros((sample_num, 1), dtype=np.int32)
 		x_centroid = np.zeros((sample_num, 1), dtype=np.float32)
@@ -60,6 +61,7 @@ class Save():
 		augments_features = np.zeros((augments_num, self.FEATURE_DIM), dtype=np.float32)
 		augments_labels = np.zeros((augments_num, 1), dtype=np.int32)
 		augments_db_id = np.zeros((augments_num, 1), dtype=np.int32)
+		augments_checkpoints = np.zeros((augments_num, 1), dtype=np.int32)
 
 		# set slides to unique
 		for sample in users['samples']:
@@ -76,10 +78,11 @@ class Save():
 			sample_data['aurl'] = sample['aurl']
 			data['samples'].append(sample_data)
 
-			# related to save file
+			# save file
 			features[sidx] = sample['feature']
 			labels[sidx] = 1 if sample['label'] == 1 else -1
 			db_id[sidx] = sample['id']
+			checkpoints[sidx] = sample['checkpoints']
 			f_idx[sidx] = sample['f_idx']
 			sample_iter[sidx] = sample['iteration']
 			x_centroid[sidx] = sample['centX']
@@ -110,6 +113,7 @@ class Save():
 				augments_features[aidx] = sample['feature'][i]
 				augments_labels[aidx] = 1 if sample['label'][i] == 1 else -1
 				augments_db_id[aidx] = sample['id'][i]
+				augments_checkpoints[aidx] = sample['checkpoints'][i]
 				aidx += 1
 
 		# write training file
@@ -119,9 +123,11 @@ class Save():
 		output.create_dataset('features', data=features)
 		output.create_dataset('labels', data=labels)
 		output.create_dataset('db_id', data=db_id)
+		output.create_dataset('checkpoints', data=checkpoints)
 		output.create_dataset('augments_features', data=augments_features)
 		output.create_dataset('augments_labels', data=augments_labels)
 		output.create_dataset('augments_db_id', data=augments_db_id)
+		output.create_dataset('augments_checkpoints', data=augments_checkpoints)
 		output.create_dataset('sample_iter', data=sample_iter)
 		output.create_dataset('x_centroid', data=x_centroid)
 		output.create_dataset('y_centroid', data=y_centroid)

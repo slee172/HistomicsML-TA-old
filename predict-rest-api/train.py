@@ -17,3 +17,4 @@ class Train():
         self.uid = q["uid"]
         self.samples = q["samples"]
         self.iter = int(q["iteration"])
+        self.classifier = q["classifier"]
