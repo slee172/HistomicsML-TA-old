@@ -26,3 +26,4 @@ class retrainView():
         self.bottom = int(q["bottom"])
         self.samples = q["samples"]
         self.iter = int(q["iteration"])
+        self.classifier = q["classifier"]

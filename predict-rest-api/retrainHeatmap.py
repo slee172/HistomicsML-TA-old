@@ -43,6 +43,7 @@ class retrainHeatmap():
 		self.classMax = 0
 		self.samples = q["samples"]
 		self.iter = int(q["iteration"])
+		self.classifier = q["classifier"]
 
 
 	def setXandYmap(self):

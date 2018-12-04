@@ -56,6 +56,9 @@ def run():
     print "Dataset Loaded."
     # set normal features in memory to false
     is_normal_loaded = True
+    tset_name = None
+    is_reloaded = False
+    m_checkpoints = 0
 
     while True:
 
@@ -79,7 +82,6 @@ def run():
             q_uid = q["uid"]
             target = q["target"]
             session_uid = q["uid"]
-
             dataSetPath = set.DATASET_DIR + q["dataset"]
             # if specific features then set m_loaded to true
             is_normal_loaded = False if dataSetPath == set.PATH_TO_SPECIAL else True
@@ -119,6 +121,7 @@ def run():
 
             if target == 'reload':
                 t_path = set.TRAININGSET_DIR + q["trainingSetName"]
+                is_reloaded = True
 
             if target == 'reviewSave':
                 q_samples = json.loads(q["samples"])
@@ -167,6 +170,7 @@ def run():
                 feature_set = dset.getFeatureSet(data_idx, object_num)
                 x_centroid_set = dset.getXcentroidSet(data_idx, object_num)
                 y_centroid_set = dset.getYcentroidSet(data_idx, object_num)
+
                 print "Predict Start ... "
                 t0 = time()
                 predictions = model.predict(feature_set)
@@ -176,6 +180,14 @@ def run():
                     viewer.left, viewer.right, viewer.top, viewer.bottom, x_centroid_set.astype(np.float), y_centroid_set.astype(np.float)
                 )
                 data = {}
+                # for i in object_idx:
+                #     data[str(x_centroid_set[i][0])+'_'+str(y_centroid_set[i][0])] = str(predictions[i])
+                #     for sample in uset.users[uidx]['samples']:
+                #         if sample['slide'] == viewer.slide:
+                #             if str(x_centroid_set[i][0]) == str(sample['centX']) and \
+                #                 str(y_centroid_set[i][0]) == str(sample['centY']):
+                #                 data[str(x_centroid_set[i][0])+'_'+str(y_centroid_set[i][0])] = str(sample['label']+2)
+
                 for i in object_idx:
                     data[str(x_centroid_set[i][0])+'_'+str(y_centroid_set[i][0])] = str(predictions[i])
 
@@ -248,6 +260,9 @@ def run():
                 uset.setReloadedData(uidx, t_path)
 
                 sample_size = len(uset.users[uidx]['samples'])
+
+                m_checkpoints = uset.users[uidx]['samples'][sample_size-1]['checkpoints']
+
                 sample_batch_size = agen.AUG_BATCH_SIZE * sample_size
                 train_size = sample_size + sample_batch_size
 
@@ -262,9 +277,12 @@ def run():
 
                 train_labels = to_categorical(train_labels, num_classes=2)
 
+                tset_path = t_path.split('/')[-1]
+                tset_name = tset_path.split('.')[0]
+
                 print "Training ... ", len(train_labels)
                 t0 = time()
-                model.train_model(train_features, train_labels)
+                model.train_model(train_features, train_labels, tset_name)
                 t1 = time()
                 print "Training took ", t1 - t0
 
@@ -296,7 +314,7 @@ def run():
 
                 print "Training ... ", len(train_labels)
                 t0 = time()
-                model.train_model(train_features, train_labels)
+                model.train_model(train_features, train_labels, report_label.classifier)
                 t1 = time()
                 print "Training took ", t1 - t0
 
@@ -360,7 +378,7 @@ def run():
                 )
 
                 # set an array for boundary points in a region to zero
-                im_bold = np.zeros((bold_width, bold_height), dtype=np.uint8)
+                im_bold = np.zeros((bold_height, bold_width), dtype=np.uint8)
 
                 for i in object_idx:
                     for j in range(len(boundarySet)):
@@ -378,7 +396,7 @@ def run():
                           boundaryPoints.append(np.asarray(object_points))
                           cv2.fillPoly(im_bold, boundaryPoints, 255 if predicts[i] > 0 else 0)
 
-                im_out = im_bold[bold:bold+report_label.width, bold:bold+report_label.width]
+                im_out = im_bold[bold:bold+report_label.height, bold:bold+report_label.width]
 
                 imsave(report_label.inFile, im_out)
 
@@ -421,7 +439,7 @@ def run():
 
                 print "Training ... ", len(train_labels)
                 t0 = time()
-                model.train_model(train_features, train_labels)
+                model.train_model(train_features, train_labels, report_count.classifier)
                 t1 = time()
                 print "Training took ", t1 - t0
 
@@ -459,6 +477,7 @@ def run():
                     out_file.write("%d\t" % neg_num[i])
                     out_file.write("\n")
 
+                out_file.close()
                 print ("count success ", report_count.inFile)
                 data = {"success": report_count.outFile}
                 db.set(q_uid, json.dumps(data))
@@ -494,7 +513,7 @@ def run():
 
                 print "Training ... ", len(train_labels)
                 t0 = time()
-                model.train_model(train_features, train_labels)
+                model.train_model(train_features, train_labels, report_map.classifier)
                 t1 = time()
                 print "Training took ", t1 - t0
 
@@ -558,14 +577,34 @@ def run():
                 db.ltrim(set.REQUEST_QUEUE, len(q_uid), -1)
 
             if target == 'train':
+                # increase checkpoint by 1
+                m_checkpoints += 1
                 # initialize augment
                 agen = augments.Augments()
-
                 uset.setIter(uidx, t_train.iter)
+
                 for sample in t_train.samples:
                     # init sample and augment
-                    init_sample = {'id': 0, 'f_idx': 0, 'aurl':0, 'feature':0, 'label':0, 'iteration':0, 'centX':0, 'centY':0, 'slideIdx':0, 'slide':0}
-                    init_augment = {'id': [], 'feature':[], 'label':[]}
+                    init_sample = dict(
+                        id=0, f_idx=0, checkpoints=0,
+                        aurl=None, feature=None, label=0,
+                        iteration=0, centX=0, centY=0,
+                        slideIdx=0, slide=None
+                    )
+                    init_augment = dict(
+                        id=[], checkpoints=[], feature=[], label=[]
+                    )
+                    # init_sample = {'id': 0, 'f_idx': 0, 'aurl':0, 'feature':0, 'label':0, 'iteration':0, 'centX':0, 'centY':0, 'slideIdx':0, 'slide':0}
+                    # init_augment = {'id': [], 'feature':[], 'label':[]}
+
+                    # check db_id in users samples
+                    remove_idx = []
+                    for u in range(len(uset.users[uidx]['samples'])):
+                        if uset.users[uidx]['samples'][u]['id'] == sample['id']:
+                            remove_idx.append(u)
+
+                    for r in remove_idx:
+                        uset.users[uidx]['samples'].pop(r)
 
                     # add feature
                     init_sample['id'] = sample['id']
@@ -592,6 +631,7 @@ def run():
                     init_sample['iteration'] = t_train.iter
                     init_sample['centX'] = sample['centX']
                     init_sample['centY'] = sample['centY']
+                    init_sample['checkpoints'] = m_checkpoints
 
                     # add augment features
                     a_imgs = agen.prepare_image(init_sample['aurl'], init_sample['slide'])
@@ -599,14 +639,17 @@ def run():
                     a_featureSet = iset.PCA.transform(a_featureSet)
                     a_labelSet = np.zeros((agen.AUG_BATCH_SIZE, )).astype(np.uint8)
                     a_idSet = []
+                    a_checkpointSet = []
                     for i in range(agen.AUG_BATCH_SIZE):
                         a_idSet.append(init_sample['id'])
+                        a_checkpointSet.append(init_sample['checkpoints'])
                     if init_sample['label'] > 0:
                         a_labelSet.fill(1)
 
                     init_augment['id'] = a_idSet
                     init_augment['feature'] = a_featureSet
                     init_augment['label'] = a_labelSet
+                    init_augment['checkpoints'] = a_checkpointSet
 
                     uset.setAugmentData(uidx, init_augment)
                     uset.setTrainSampleData(uidx, init_sample)
@@ -626,9 +669,12 @@ def run():
 
                 train_labels = to_categorical(train_labels, num_classes=2)
 
+                if tset_name is None:
+                    tset_name = t_train.classifier
+
                 print "Training ... ", len(train_labels)
                 t0 = time()
-                model.train_model(train_features, train_labels)
+                model.train_model(train_features, train_labels, tset_name)
                 t1 = time()
                 print "Training took ", t1 - t0
 
@@ -637,15 +683,37 @@ def run():
                 db.ltrim(set.REQUEST_QUEUE, len(q_uid), -1)
 
             if target == 'retrainView':
+
+                m_checkpoints += 1
                 # initialize augment
                 agen = augments.Augments()
 
                 uset.setIter(uidx, retrain_v.iter)
 
                 for sample in retrain_v.samples:
+
                     # init sample and augment
-                    init_sample = {'id': 0, 'f_idx': 0, 'aurl':0, 'feature':0, 'label':0, 'iteration':0, 'centX':0, 'centY':0, 'slideIdx':0, 'slide':0}
-                    init_augment = {'id': [], 'feature':[], 'label':[]}
+                    # init_sample = {'id': 0, 'f_idx': 0, 'aurl':0, 'feature':0, 'label':0, 'iteration':0, 'centX':0, 'centY':0, 'slideIdx':0, 'slide':0}
+                    # init_augment = {'id': [], 'feature':[], 'label':[]}
+                    init_sample = dict(
+                        id=0, f_idx=0, checkpoints=0,
+                        aurl=None, feature=None, label=0,
+                        iteration=0, centX=0, centY=0,
+                        slideIdx=0, slide=None
+                    )
+                    init_augment = dict(
+                        id=[], checkpoints=[], feature=[], label=[]
+                    )
+
+                    # check db_id in users samples
+                    remove_idx = []
+                    for u in range(len(uset.users[uidx]['samples'])):
+                        if uset.users[uidx]['samples'][u]['id'] == sample['id']:
+                            remove_idx.append(u)
+
+                    for r in remove_idx:
+                        uset.users[uidx]['samples'].pop(r)
+
                     # add feature
                     init_sample['id'] = sample['id']
                     init_sample['aurl'] = str(sample['aurl'])
@@ -671,6 +739,7 @@ def run():
                     init_sample['iteration'] = retrain_v.iter
                     init_sample['centX'] = sample['centX']
                     init_sample['centY'] = sample['centY']
+                    init_sample['checkpoints'] = m_checkpoints
 
                     # add augment features
                     a_imgs = agen.prepare_image(init_sample['aurl'], init_sample['slide'])
@@ -678,14 +747,17 @@ def run():
                     a_featureSet = iset.PCA.transform(a_featureSet)
                     a_labelSet = np.zeros((agen.AUG_BATCH_SIZE, )).astype(np.uint8)
                     a_idSet = []
+                    a_checkpointSet = []
                     for i in range(agen.AUG_BATCH_SIZE):
                         a_idSet.append(init_sample['id'])
+                        a_checkpointSet.append(init_sample['checkpoints'])
                     if init_sample['label'] > 0:
                         a_labelSet.fill(1)
 
                     init_augment['id'] = a_idSet
                     init_augment['feature'] = a_featureSet
                     init_augment['label'] = a_labelSet
+                    init_augment['checkpoints'] = a_checkpointSet
 
                     uset.setAugmentData(uidx, init_augment)
                     uset.setTrainSampleData(uidx, init_sample)
@@ -705,8 +777,11 @@ def run():
 
                 train_labels = to_categorical(train_labels, num_classes=2)
 
+                if tset_name is None:
+                    tset_name = retrain_v.classifier
+
                 t0 = time()
-                model.train_model(train_features, train_labels)
+                model.train_model(train_features, train_labels, tset_name)
                 t1 = time()
                 print "Training took ", t1 - t0, " ", len(train_labels), "Samples"
 
@@ -716,22 +791,33 @@ def run():
                 feature_set = dset.getFeatureSet(data_idx, object_num)
                 x_centroid_set = dset.getXcentroidSet(data_idx, object_num)
                 y_centroid_set = dset.getYcentroidSet(data_idx, object_num)
+
                 print "Testing Start ... "
                 t0 = time()
                 predictions = model.predict(feature_set)
                 t1 = time()
                 print "Predict took ", t1 - t0
+
                 object_idx = load(
                     retrain_v.left, retrain_v.right, retrain_v.top, retrain_v.bottom, x_centroid_set.astype(np.float), y_centroid_set.astype(np.float)
                 )
                 data = {}
                 for i in object_idx:
                     data[str(x_centroid_set[i][0])+'_'+str(y_centroid_set[i][0])] = str(predictions[i])
+                # for i in object_idx:
+                #     data[str(x_centroid_set[i][0])+'_'+str(y_centroid_set[i][0])] = str(predictions[i])
+                #     for sample in uset.users[uidx]['samples']:
+                #         if sample['slide'] == retrain_v.slide:
+                #             if str(x_centroid_set[i][0]) == str(sample['centX']) and \
+                #                 str(y_centroid_set[i][0]) == str(sample['centY']):
+                #                 data[str(x_centroid_set[i][0])+'_'+str(y_centroid_set[i][0])] = str(sample['label']+2)
+                #                 print str(x_centroid_set[i][0]), str(y_centroid_set[i][0]), str(sample['label']+2)
 
                 db.set(q_uid, json.dumps(data))
                 db.ltrim(set.REQUEST_QUEUE, len(q_uid), -1)
 
             if target == 'retrainHeatmap':
+                m_checkpoints += 1
                 # initialize augment
                 agen = augments.Augments()
 
@@ -739,8 +825,28 @@ def run():
 
                 for sample in retrain_h.samples:
                     # init sample and augment
-                    init_sample = {'id': 0, 'f_idx': 0, 'aurl':0, 'feature':0, 'label':0, 'iteration':0, 'centX':0, 'centY':0, 'slideIdx':0, 'slide':0}
-                    init_augment = {'id': 0, 'feature':[], 'label':[]}
+                    # init_sample = {'id': 0, 'f_idx': 0, 'aurl':0, 'feature':0, 'label':0, 'iteration':0, 'centX':0, 'centY':0, 'slideIdx':0, 'slide':0}
+                    # init_augment = {'id': 0, 'feature':[], 'label':[]}
+
+                    init_sample = dict(
+                        id=0, f_idx=0, checkpoints=0,
+                        aurl=None, feature=None, label=0,
+                        iteration=0, centX=0, centY=0,
+                        slideIdx=0, slide=None
+                    )
+                    init_augment = dict(
+                        id=[], checkpoints=[], feature=[], label=[]
+                    )
+
+                    # check db_id in users samples
+                    remove_idx = []
+                    for u in range(len(uset.users[uidx]['samples'])):
+                        if uset.users[uidx]['samples'][u]['id'] == sample['id']:
+                            remove_idx.append(u)
+
+                    for r in remove_idx:
+                        uset.users[uidx]['samples'].pop(r)
+
                     # add feature
                     init_sample['id'] = sample['id']
                     init_sample['aurl'] = str(sample['aurl'])
@@ -766,6 +872,7 @@ def run():
                     init_sample['iteration'] = retrain_h.iter
                     init_sample['centX'] = sample['centX']
                     init_sample['centY'] = sample['centY']
+                    init_sample['checkpoints'] = m_checkpoints
 
                     # add augment features
                     a_imgs = agen.prepare_image(init_sample['aurl'], init_sample['slide'])
@@ -773,14 +880,17 @@ def run():
                     a_featureSet = iset.PCA.transform(a_featureSet)
                     a_labelSet = np.zeros((agen.AUG_BATCH_SIZE, )).astype(np.uint8)
                     a_idSet = []
+                    a_checkpointSet = []
                     for i in range(agen.AUG_BATCH_SIZE):
                         a_idSet.append(init_sample['id'])
+                        a_checkpointSet.append(init_sample['checkpoints'])
                     if init_sample['label'] > 0:
                         a_labelSet.fill(1)
 
                     init_augment['id'] = a_idSet
                     init_augment['feature'] = a_featureSet
                     init_augment['label'] = a_labelSet
+                    init_augment['checkpoints'] = a_checkpointSet
 
                     uset.setAugmentData(uidx, init_augment)
                     uset.setTrainSampleData(uidx, init_sample)
@@ -800,8 +910,11 @@ def run():
 
                 train_labels = to_categorical(train_labels, num_classes=2)
 
+                if tset_name is None:
+                    tset_name = retrain_h.classifier
+
                 t0 = time()
-                model.train_model(train_features, train_labels)
+                model.train_model(train_features, train_labels, tset_name)
                 t1 = time()
                 print "Training took ", t1 - t0, " ", len(train_labels), "Samples"
 
@@ -832,6 +945,10 @@ def run():
 
                 uset.users = []
                 uset.u_size = 0
+                is_normal_loaded = True
+                tset_name = None
+                is_reloaded = False
+                m_checkpoints = 0
 
                 del select
                 del finalize

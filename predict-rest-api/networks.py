@@ -14,6 +14,7 @@ class Network():
 		self.batch_size = 32
 		self.test_batch_size = 1000000
 		self.learning_rate = 0.01
+		self.checkpointIter = 0
 		# self.sess = None
 		self.x = None
 		self.y = None
@@ -48,7 +49,7 @@ class Network():
 		self.init = tf.global_variables_initializer()
 		self.saver = tf.train.Saver()
 
-	def train_model(self, features, labels):
+	def train_model(self, features, labels, classifier):
 
 		# # define cost of our neural network
 		# cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=self.logits, labels=self.y))
@@ -57,8 +58,10 @@ class Network():
 		# init = tf.global_variables_initializer()
 		# saver = tf.train.Saver()
 		# create a session, and run our neural network in the session.
-		
-		 with tf.Session() as sess:
+		self.classifier = classifier
+		# self.checkpointIter += 1
+
+		with tf.Session() as sess:
 			# self.sess = tf.InteractiveSession()
 			sess.run(self.init)
 			for epoch in range(self.epochs):
@@ -69,7 +72,7 @@ class Network():
 					_, c = sess.run([self.optimizer, self.cost], feed_dict = {self.x: batch_x, self.y: batch_y})
 					# avg_cost += c / total_batch
 				# print "Epoch:", (epoch+1), "cost =", "{:.5f}".format(avg_cost)
-			save_path = self.saver.save(sess, "./model.ckpt")
+			save_path = self.saver.save(sess, "./checkpoints/" + self.classifier + ".ckpt")
 
 
 	def predict_prob(self, features):
@@ -79,7 +82,7 @@ class Network():
 			try:
 				# saver = tf.train.Saver()
 				# saver = tf.train.import_meta_graph(self.ModelDirectory + '.meta')
-				self.saver.restore(sess, "./model.ckpt")
+				self.saver.restore(sess, "./checkpoints/" + self.classifier + ".ckpt")
 			except IOError:
 				print(" ...")
 			softmax_ = tf.nn.softmax(self.logits)
@@ -105,7 +108,7 @@ class Network():
 			try:
 				# saver = tf.train.Saver()
 				# saver = tf.train.import_meta_graph(self.ModelDirectory + '.meta')
-				self.saver.restore(sess, "./model.ckpt")
+				self.saver.restore(sess, "./checkpoints/" + self.classifier + ".ckpt")
 			except IOError:
 				print(" ...")
 			# logits = init_model()
