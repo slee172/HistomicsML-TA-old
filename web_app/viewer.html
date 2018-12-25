@@ -85,6 +85,16 @@
 						<br/>
 						Available Slides: <span id="count_patient"></span>
 					</p>
+
+					<div data-bind="with: statusObj">
+						<span>Mouse Pos: </span>
+						<span>(</span>
+						<span data-bind="text:(haveImage() &&  haveMouse()) ? mouseImgX().toFixed(0) : '-'"></span>
+						<span>, </span>
+						<span data-bind="text:(haveImage() &&  haveMouse()) ? mouseImgY().toFixed(0) : '-'"></span>
+						<span>)</span>
+					</div>
+
 				</div>
 
 
@@ -136,16 +146,6 @@
 						<li id="negLegend">Neg Class
 					</ul>
 				</br>
-
-					<div data-bind="with: statusObj">
-						<span>Mouse Pos: </span>
-						<span>(</span>
-						<span data-bind="text:(haveImage() &&  haveMouse()) ? mouseImgX().toFixed(0) : '-'"></span>
-						<span>, </span>
-						<span data-bind="text:(haveImage() &&  haveMouse()) ? mouseImgY().toFixed(0) : '-'"></span>
-						<span>)</span>
-					</div>
-
 				</div>
 
 			</div>  <!-- First row -->
