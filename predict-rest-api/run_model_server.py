@@ -51,8 +51,8 @@ def run():
     uset = users.Users()
 
     # store special features in memory
-    dset_special = dataset.Dataset(set.PATH_TO_SPECIAL)
-    # dset_special = None
+    # dset_special = dataset.Dataset(set.PATH_TO_SPECIAL)
+    dset_special = None
     print "Dataset Loaded."
     # set normal features in memory to false
     is_normal_loaded = True
@@ -330,7 +330,7 @@ def run():
                 t1 = time()
                 print "Predict took ", t1 - t0
 
-                inputImageFile = '/localdata/pyramids/BRCA/' + report_label.slide + '.svs.dzi.tif'
+                inputImageFile = '/localdata/pyramids/'+ q["dataset"].split('/')[0] +'/' + report_label.slide + '.svs.dzi.tif'
 
                 bold = 512
                 bold_left = report_label.left - bold
@@ -605,6 +605,7 @@ def run():
 
                     for r in remove_idx:
                         uset.users[uidx]['samples'].pop(r)
+                        uset.users[uidx]['augments'].pop(r)
 
                     # add feature
                     init_sample['id'] = sample['id']
@@ -690,6 +691,8 @@ def run():
 
                 uset.setIter(uidx, retrain_v.iter)
 
+                print "Augment ... ", len(retrain_v.samples)
+                t0 = time()
                 for sample in retrain_v.samples:
 
                     # init sample and augment
@@ -713,6 +716,7 @@ def run():
 
                     for r in remove_idx:
                         uset.users[uidx]['samples'].pop(r)
+                        uset.users[uidx]['augments'].pop(r)
 
                     # add feature
                     init_sample['id'] = sample['id']
@@ -762,6 +766,8 @@ def run():
                     uset.setAugmentData(uidx, init_augment)
                     uset.setTrainSampleData(uidx, init_sample)
 
+                t1 = time()
+                print "Augmentation took ", t1 - t0
                 sample_size = len(uset.users[uidx]['samples'])
                 sample_batch_size = agen.AUG_BATCH_SIZE * sample_size
                 train_size = sample_size + sample_batch_size
@@ -846,6 +852,7 @@ def run():
 
                     for r in remove_idx:
                         uset.users[uidx]['samples'].pop(r)
+                        uset.users[uidx]['augments'].pop(r)
 
                     # add feature
                     init_sample['id'] = sample['id']
@@ -961,7 +968,7 @@ def run():
 
                 model = networks.Network()
                 model.init_model()
-                dset = dataset.Dataset(set.PATH_TO_SPECIAL)
+                # dset = dataset.Dataset(set.PATH_TO_SPECIAL)
 
                 data = {"success": 'pass'}
                 db.set(q_uid, json.dumps(data))
