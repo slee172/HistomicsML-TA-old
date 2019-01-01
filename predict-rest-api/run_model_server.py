@@ -51,8 +51,8 @@ def run():
     uset = users.Users()
 
     # store special features in memory
-    # dset_special = dataset.Dataset(set.PATH_TO_SPECIAL)
-    dset_special = None
+    dset_special = dataset.Dataset(set.PATH_TO_SPECIAL)
+    # dset_special = None
     print "Dataset Loaded."
     # set normal features in memory to false
     is_normal_loaded = True
@@ -594,8 +594,6 @@ def run():
                     init_augment = dict(
                         id=[], checkpoints=[], feature=[], label=[]
                     )
-                    # init_sample = {'id': 0, 'f_idx': 0, 'aurl':0, 'feature':0, 'label':0, 'iteration':0, 'centX':0, 'centY':0, 'slideIdx':0, 'slide':0}
-                    # init_augment = {'id': [], 'feature':[], 'label':[]}
 
                     # check db_id in users samples
                     remove_idx = []
@@ -635,7 +633,11 @@ def run():
                     init_sample['checkpoints'] = m_checkpoints
 
                     # add augment features
-                    a_imgs = agen.prepare_image(init_sample['aurl'], init_sample['slide'])
+                    slide_idx = dset.getSlideIdx(init_sample['slide'])
+                    slide_mean = dset.getWSI_Mean(slide_idx)
+                    slide_std = dset.getWSI_Std(slide_idx)
+
+                    a_imgs = agen.prepare_image(init_sample['aurl'], slide_mean, slide_std)
                     a_featureSet = iset.FC1_MODEL.predict(a_imgs)
                     a_featureSet = iset.PCA.transform(a_featureSet)
                     a_labelSet = np.zeros((agen.AUG_BATCH_SIZE, )).astype(np.uint8)
@@ -746,7 +748,11 @@ def run():
                     init_sample['checkpoints'] = m_checkpoints
 
                     # add augment features
-                    a_imgs = agen.prepare_image(init_sample['aurl'], init_sample['slide'])
+                    slide_idx = dset.getSlideIdx(init_sample['slide'])
+                    slide_mean = dset.getWSI_Mean(slide_idx)
+                    slide_std = dset.getWSI_Std(slide_idx)
+
+                    a_imgs = agen.prepare_image(init_sample['aurl'], slide_mean, slide_std)
                     a_featureSet = iset.FC1_MODEL.predict(a_imgs)
                     a_featureSet = iset.PCA.transform(a_featureSet)
                     a_labelSet = np.zeros((agen.AUG_BATCH_SIZE, )).astype(np.uint8)
@@ -882,7 +888,11 @@ def run():
                     init_sample['checkpoints'] = m_checkpoints
 
                     # add augment features
-                    a_imgs = agen.prepare_image(init_sample['aurl'], init_sample['slide'])
+                    slide_idx = dset.getSlideIdx(init_sample['slide'])
+                    slide_mean = dset.getWSI_Mean(slide_idx)
+                    slide_std = dset.getWSI_Std(slide_idx)
+
+                    a_imgs = agen.prepare_image(init_sample['aurl'], slide_mean, slide_std)
                     a_featureSet = iset.FC1_MODEL.predict(a_imgs)
                     a_featureSet = iset.PCA.transform(a_featureSet)
                     a_labelSet = np.zeros((agen.AUG_BATCH_SIZE, )).astype(np.uint8)
@@ -968,7 +978,7 @@ def run():
 
                 model = networks.Network()
                 model.init_model()
-                # dset = dataset.Dataset(set.PATH_TO_SPECIAL)
+                dset = dataset.Dataset(set.PATH_TO_SPECIAL)
 
                 data = {"success": 'pass'}
                 db.set(q_uid, json.dumps(data))
