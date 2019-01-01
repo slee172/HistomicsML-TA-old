@@ -59,7 +59,6 @@ class Network():
 		# saver = tf.train.Saver()
 		# create a session, and run our neural network in the session.
 		self.classifier = classifier
-		# self.checkpointIter += 1
 
 		with tf.Session() as sess:
 			# self.sess = tf.InteractiveSession()
@@ -70,8 +69,8 @@ class Network():
 				for i in range(total_batch):
 					batch_x, batch_y = self.train_next_batch(self.batch_size, features, labels)
 					_, c = sess.run([self.optimizer, self.cost], feed_dict = {self.x: batch_x, self.y: batch_y})
-					# avg_cost += c / total_batch
-				# print "Epoch:", (epoch+1), "cost =", "{:.5f}".format(avg_cost)
+					avg_cost += c / total_batch
+				print "Epoch:", (epoch+1), "cost =", "{:.5f}".format(avg_cost)
 			save_path = self.saver.save(sess, "./checkpoints/" + self.classifier + ".ckpt")
 
 
