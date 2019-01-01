@@ -15,7 +15,8 @@ class Dataset():
 		self.slideIdx = self.f['slideIdx'][:]
 		self.slides = self.f['slides'][:]
 		self.dataIdx = self.f['dataIdx'][:]
-		# self.length = self.f['dataIdx'][:]
+		self.wsi_mean = self.f['wsi_mean'][:]
+		self.wsi_stddev = self.f['wsi_stddev'][:]
 		self.n_slides = len(self.dataIdx)
 		self.n_objects = len(self.slideIdx)
 
@@ -27,8 +28,7 @@ class Dataset():
 		return idx
 
 	def getDataIdx(self, index):
-		idx = self.dataIdx[index][0]
-		return idx
+		return self.dataIdx[index][0]
 
 	def getObjNum(self, index):
 		if self.n_slides > index + 1:
@@ -38,17 +38,19 @@ class Dataset():
 		return num
 
 	def getFeatureSet(self, index, num):
-		fset = self.features[index: index+num]
-		return fset
+		return self.features[index: index+num]
+
+	def getWSI_Mean(self, index):
+		return self.wsi_mean[index][:]
+
+	def getWSI_Std(self, index):
+		return self.wsi_stddev[index][:]
 
 	def getXcentroidSet(self, index, num):
-		xset = self.x_centroid[index: index+num]
-		return xset
+		return self.x_centroid[index: index+num]
 
 	def getYcentroidSet(self, index, num):
-		yset = self.y_centroid[index: index+num]
-		return yset
+		return self.y_centroid[index: index+num]
 
 	def getSlideIdxSet(self, index, num):
-		idxset = self.slideIdx[index: index+num]
-		return idxset
+		return self.slideIdx[index: index+num]
