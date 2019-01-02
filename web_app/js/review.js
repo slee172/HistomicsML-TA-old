@@ -601,9 +601,9 @@ function clearslides(){
 function displayOneslide(sampleArray, slide_num){
 
 	var container, row;
-	var postile, negtile, igrtile;
-	var postile__name, negtile__name, igrtile__name;
-	var postile__list, negtile__list, igrtile__list;
+	var postile, negtile; //, igrtile;
+	var postile__name, negtile__name; //, igrtile__name;
+	var postile__list, negtile__list; //, igrtile__list;
 	var scale, slide, centX, centY, sizeX, sizeY, loc, thumbNail;
 
 	container = document.getElementById('slides');
@@ -627,13 +627,13 @@ function displayOneslide(sampleArray, slide_num){
 	negtile_list.setAttribute('class', 'tile_list');
 	negtile_list.setAttribute('id', 'neg_tile');
 
-	igrtile = document.createElement("div");
-	igrtile.setAttribute('class', 'layer tile');
-	igrtile_name = document.createElement("div");
-	igrtile_name.setAttribute('class', 'tile_name');
-	igrtile_list = document.createElement("div");
-	igrtile_list.setAttribute('class', 'tile_list');
-	igrtile_list.setAttribute('id', 'igr_tile');
+	// igrtile = document.createElement("div");
+	// igrtile.setAttribute('class', 'layer tile');
+	// igrtile_name = document.createElement("div");
+	// igrtile_name.setAttribute('class', 'tile_name');
+	// igrtile_list = document.createElement("div");
+	// igrtile_list.setAttribute('class', 'tile_list');
+	// igrtile_list.setAttribute('id', 'igr_tile');
 
 
 	for( sample in sampleArray ) {
@@ -678,10 +678,11 @@ function displayOneslide(sampleArray, slide_num){
 
 		if( sampleArray[sample]['label'] === 1 ) {
 			postile_list.appendChild(im);
-		} else if( sampleArray[sample]['label'] === -1 ) {
-			negtile_list.appendChild(im);
+		// } else if( sampleArray[sample]['label'] === -1 ) {
 		}	else{
-			igrtile_list.appendChild(im);
+			negtile_list.appendChild(im);
+		// }	else{
+		// 	igrtile_list.appendChild(im);
 		}
 
 	}
@@ -689,10 +690,10 @@ function displayOneslide(sampleArray, slide_num){
 	// find max number of samples in each section
 	var a = postile_list.childElementCount;
 	var b = negtile_list.childElementCount;
-	var c = igrtile_list.childElementCount;
+	// var c = igrtile_list.childElementCount;
 
 	var max = Math.max(a, b);
-	max = Math.max(max, c);
+	// max = Math.max(max, c);
 
 	var sample_num = sampleArray.length;
 	var sizeX = 100;
@@ -716,15 +717,15 @@ function displayOneslide(sampleArray, slide_num){
 			negtile_list.appendChild(im);
 			sample_num = sample_num + 1;
 		}
-		if ((c-i) < 0) {
-			var im = document.createElement('img');
-			im.setAttribute('class',"no-border");
-			im.setAttribute('width',sizeX);
-			im.setAttribute('height',sizeY);
-			im.setAttribute('id','box_'+slide_num+'_'+sample_num);
-			igrtile_list.appendChild(im);
-			sample_num = sample_num + 1;
-		}
+		// if ((c-i) < 0) {
+		// 	var im = document.createElement('img');
+		// 	im.setAttribute('class',"no-border");
+		// 	im.setAttribute('width',sizeX);
+		// 	im.setAttribute('height',sizeY);
+		// 	im.setAttribute('id','box_'+slide_num+'_'+sample_num);
+		// 	igrtile_list.appendChild(im);
+		// 	sample_num = sample_num + 1;
+		// }
 	}
 
 	postile_name.innerHTML = posClass;
@@ -733,13 +734,13 @@ function displayOneslide(sampleArray, slide_num){
 	negtile_name.innerHTML = negClass;
 	negtile.appendChild(negtile_name);
 	negtile.appendChild(negtile_list);
-	igrtile_name.innerHTML = "Ignore";
-	igrtile.appendChild(igrtile_name);
-	igrtile.appendChild(igrtile_list);
+	// igrtile_name.innerHTML = "Ignore";
+	// igrtile.appendChild(igrtile_name);
+	// igrtile.appendChild(igrtile_list);
 
 	row.appendChild(postile);
 	row.appendChild(negtile);
-	row.appendChild(igrtile);
+	// row.appendChild(igrtile);
 
 	container.appendChild(row);
 
