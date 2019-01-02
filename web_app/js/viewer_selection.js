@@ -75,6 +75,12 @@ var heatmapresultJson = {};
 var isretrained = false;
 var isfirstload = true;
 var isfinalize = false;
+var posSelectedcolor = 'yellow';
+var negSelectedcolor = 'black';
+var poscolor = 'lime';
+var negcolor = 'lightgrey';
+var selectedtrans = '0.6';
+var trans = '0.2';
 //
 //	Initialization
 //
@@ -199,6 +205,8 @@ $(function() {
 			reloaded = data['reloaded'];
 			init_reloaded = data['init_reloaded'];
 
+			$('#legend').hide();
+
 			if( reloaded == true ) {
 				iteration = data['iteration'];
 				$('#reloadDiag').modal('show');
@@ -220,7 +228,6 @@ $(function() {
 				$('#trainInfo').hide();
 				$('#heatmap').hide();
 				$('#retrainInfo').hide();
-				$('#legend').hide();
 
 				// document.getElementById("index").setAttribute("href","index.html");
 
@@ -230,7 +237,7 @@ $(function() {
 
 				var box = " <svg width='20' height='20'> <rect width='15' height = '15' style='fill:lightgrey;stroke-width:3;stroke:rgb(0,0,0)'/></svg>";
 				document.getElementById('negLegend').innerHTML = box + " " + negClass;
-				var box = " <svg width='20' height='20'> <rect width='15' height = '15' style='fill:lime;stroke-width:3;stroke:rgb(0,0,0)'/></svg>";
+				var box = " <svg width='20' height='20'> <rect width='15' height = '15' style='fill:aqua;stroke-width:3;stroke:rgb(0,0,0)'/></svg>";
 				document.getElementById('posLegend').innerHTML = box + " " + posClass;
 
 				$('#legend').show();
@@ -539,19 +546,20 @@ function updateSlideSeg() {
 
 	var class_sel = document.getElementById('classifier_sel');
 
-	$.ajax({
-	type: "POST",
-			url: "db/getnuclei_naive.php",
-			dataType: "json",
-	data: {
-			slide: 	curSlide,
-			left:	left,
-			right:	right,
-			top:	top,
-			bottom:	bottom,
-			application: application,
-	},
-
+    $.ajax({
+		type: "POST",
+     	 	url: "db/getnuclei.php",
+     	 	dataType: "json",
+		data: { uid:	uid,
+				slide: 	curSlide,
+				left:	left,
+				right:	right,
+				top:	top,
+				bottom:	bottom,
+				dataset: curDataset,
+				trainset: classifier,
+				application: application
+		},
 
 		success: function(data) {
 
@@ -585,8 +593,16 @@ function updateSlideSeg() {
 					// ele.setAttribute('stroke-width', 4);
 					ele.setAttribute("stroke-dasharray", "5,5");
 					// color
-					ele.setAttribute('fill', 'aqua');
-					ele.setAttribute("fill-opacity", "0.2");
+					ele.setAttribute('fill', data[cell][2]);
+					if (data[cell][2] == posSelectedcolor) {
+						ele.setAttribute("fill-opacity", selectedtrans);
+					}
+					else if (data[cell][2] == negSelectedcolor) {
+						ele.setAttribute("fill-opacity", selectedtrans);
+					}
+					else {
+						ele.setAttribute("fill-opacity", trans);
+					}
 					//ele.setAttribute("fill", "none");
 					segGrp.appendChild(ele);
 				}
@@ -605,7 +621,24 @@ function updateSlideSeg() {
 
 					segGrp.appendChild(ele);
 				}
+				// if the number of samples fixed is larger than 0,
+				if( fixes['samples'].length > 0 ) {
+					for( cell in fixes['samples'] ) {
+						var bound = document.getElementById("N"+fixes['samples'][cell]['id']);
 
+						if( bound != null ) {
+								// check label
+								if( fixes['samples'][cell]['label'] == 1 ) {
+										bound.setAttribute('fill', posSelectedcolor);
+										bound.setAttribute("fill-opacity", selectedtrans);
+								} else if( fixes['samples'][cell]['label'] == -1 ) {
+										bound.setAttribute('fill', negSelectedcolor);
+										bound.setAttribute("fill-opacity", selectedtrans);
+								}
+						}
+
+					}
+				}
 			}
   	});
 
@@ -744,40 +777,33 @@ function getSampleColors() {
 					segGrp.setAttribute('id', 'segGrp');
 					annoGrp.appendChild(segGrp);
 
+					for( cell in data ) {
+						ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
 
-					if (application == "cell"){
-						for( cell in data ) {
-							ele = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+						ele.setAttribute('points', data[cell][0]);
+						ele.setAttribute('id', 'N' + data[cell][1]);
+						if (application == "region"){
+							ele.setAttribute('stroke', 'aqua');
+							// ele.setAttribute('stroke-width', '2');
+							ele.setAttribute('fill', data[cell][2]);
 
-							ele.setAttribute('cx', data[cell][1]);
-							ele.setAttribute('cy', data[cell][2]);
-							ele.setAttribute('r', 2);
-							ele.setAttribute('id', 'N' + data[cell][0]);
-							ele.setAttribute('stroke', data[cell][3]);
-							ele.setAttribute('fill',  data[cell][3]);
-
-							segGrp.appendChild(ele);
-						}
-					} else{
-						for( cell in data ) {
-							ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-
-							ele.setAttribute('points', data[cell][0]);
-							ele.setAttribute('id', 'N' + data[cell][1]);
-							if (application == "region"){
-								ele.setAttribute('stroke', 'aqua');
-								// ele.setAttribute('stroke-width', '2');
-								ele.setAttribute('fill', data[cell][2]);
-								ele.setAttribute("fill-opacity", "0.2");
-								ele.setAttribute("stroke-dasharray", "5,5");
-							} else{
-								ele.setAttribute('stroke', data[cell][2]);
-								ele.setAttribute('fill', 'none');
+							if (data[cell][2] == posSelectedcolor) {
+								ele.setAttribute("fill-opacity", selectedtrans);
 							}
-							segGrp.appendChild(ele);
-						}
-					}
+							else if (data[cell][2] == negSelectedcolor) {
+								ele.setAttribute("fill-opacity", selectedtrans);
+							}
+							else {
+								ele.setAttribute("fill-opacity", trans);
+							}
+							ele.setAttribute("stroke-dasharray", "5,5");
 
+						} else{
+							ele.setAttribute('stroke', data[cell][2]);
+							ele.setAttribute('fill', 'none');
+						}
+						segGrp.appendChild(ele);
+					}
 
 					if( panned ) {
 						ele = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -802,14 +828,12 @@ function getSampleColors() {
 								if (application == "region"){
 
 									if( fixes['samples'][cell]['label'] == 1 ) {
-											bound.setAttribute('fill', 'lime');
-											bound.setAttribute("fill-opacity", "0.2");
+											bound.setAttribute('fill', posSelectedcolor);
+											bound.setAttribute("fill-opacity", selectedtrans);
 									} else if( fixes['samples'][cell]['label'] == -1 ) {
-											bound.setAttribute('fill', 'lightgrey');
-											bound.setAttribute("fill-opacity", "0.2");
+											bound.setAttribute('fill', negSelectedcolor);
+											bound.setAttribute("fill-opacity", selectedtrans);
 									}
-									// bound.setAttribute("fill", "yellow");
-									// bound.setAttribute("fill-opacity", "0.2");
 								} else{
 									bound.setAttribute('stroke', 'yellow');
 								}
@@ -979,15 +1003,8 @@ function updateBoundColors(obj) {
 
 		if( bound != null ) {
 			if (fixes['samples'][cell]['id'] == obj['id']){
-				if (application == "region"){
 					bound.setAttribute('fill', 'yellow');
-					bound.setAttribute("fill-opacity", "0.2");
-				} else if (application == "cell"){
-					bound.setAttribute('stroke', 'yellow');
-					bound.setAttribute('fill', 'yellow');
-				} else{
-				bound.setAttribute('stroke', 'yellow');
-				}
+					bound.setAttribute("fill-opacity", trans);
 			}
 		}
 	}
@@ -1001,12 +1018,12 @@ function updateRegionBoundColors(obj) {
 		if( bound != null ) {
 			if (fixes['samples'][cell]['id'] == obj['id']){
 				if( fixes['samples'][cell]['label'] == 1 ) {
-						bound.setAttribute('fill', 'lime');
-						bound.setAttribute("fill-opacity", "0.2");
+						bound.setAttribute('fill', posSelectedcolor);
+						bound.setAttribute("fill-opacity", selectedtrans);
 				}
 				if( fixes['samples'][cell]['label'] == -1 ) {
-						bound.setAttribute('fill', 'lightgrey');
-						bound.setAttribute("fill-opacity", "0.2");
+						bound.setAttribute('fill', negSelectedcolor);
+						bound.setAttribute("fill-opacity", selectedtrans);
 				}
 			}
 		}
@@ -1028,32 +1045,12 @@ function undoBoundColors(obj) {
 			if (fixes['samples'][cell]['id'] == obj['id']){
 				// check label
 				if( fixes['samples'][cell]['label'] == -1 ) {
-					if (application == "region"){
-						bound.setAttribute('fill', 'lime');
-						bound.setAttribute("fill-opacity", "0.2");
-
-					} else if(application == "cell"){
-						bound.setAttribute('stroke', 'lime');
-						bound.setAttribute('fill', 'lime');
-
-					}
-					else{
-						bound.setAttribute('stroke', 'lime');
-					}
-
-				} else if( fixes['samples'][cell]['label'] == 1 ) {
-					if (application == "region"){
-						bound.setAttribute('fill', 'lightgrey');
-						bound.setAttribute("fill-opacity", "0.2");
-
-					} else if (application == "cell"){
-						bound.setAttribute('stroke', 'lightgrey');
-						bound.setAttribute('fill', 'lightgrey');
-
-					}else{
-						bound.setAttribute('stroke', 'lightgrey');
-					}
-
+						bound.setAttribute('fill', poscolor);
+						bound.setAttribute("fill-opacity", trans);
+				}
+				else if( fixes['samples'][cell]['label'] == 1 ) {
+						bound.setAttribute('fill', negcolor);
+						bound.setAttribute("fill-opacity", trans);
 				}
 			}
 		}
@@ -1071,11 +1068,11 @@ function undoRegionBoundColors(obj) {
 			if (fixes['samples'][cell]['id'] == obj['id']){
 				// check label
 				if( fixes['samples'][cell]['label'] == -1 ) {
-						bound.setAttribute('fill', 'lime');
-						bound.setAttribute("fill-opacity", "0.2");
+						bound.setAttribute('fill', posSelectedcolor);
+						bound.setAttribute("fill-opacity", selectedtrans);
 				} else if( fixes['samples'][cell]['label'] == 1 ) {
-						bound.setAttribute('fill', 'lightgrey');
-						bound.setAttribute("fill-opacity", "0.2");
+						bound.setAttribute('fill', negSelectedcolor);
+						bound.setAttribute("fill-opacity", selectedtrans);
 				}
 			}
 		}
@@ -1136,28 +1133,34 @@ function nucleiPaint() {
 
 								if (firstPaint == "") {
 
-									if (color === "lightgrey" ) {
-										firstPaint = "lime";
+									if (color === negcolor ) {
+										firstPaint = posSelectedcolor;
 									}
-									else if (color === "lime" ) {
-										firstPaint = "lightgrey";
+									else if (color === poscolor ) {
+										firstPaint = negSelectedcolor;
+									}
+									else if (color === posSelectedcolor ) {
+										firstPaint = negSelectedcolor;
+									}
+									else if (color === negSelectedcolor ) {
+										firstPaint = posSelectedcolor;
 									}
 
 									for( cell in fixes['samples'] ) {
 										if (fixes['samples'][cell]['id'] == obj['id']){
 											obj['label'] = fixes['samples'][cell]['label'];
 											if (obj['label'] === -1 ) {
-												firstPaint = "lime";
+												firstPaint = posSelectedcolor;
 											}
 											else if (obj['label'] === 1 ) {
-												firstPaint = "lightgrey";
+												firstPaint = negSelectedcolor;
 											}
 											undo = true;
 										}
 									}
 								}
 
-								if ((firstPaint == "lime")&&(color === "lightgrey" )) {
+								if ((firstPaint == posSelectedcolor)&&((color === poscolor ) || (color === negcolor )||(color === negSelectedcolor))) {
 									obj['label'] = 1;
 									flip = true;
 									// find a cell with the same id
@@ -1168,7 +1171,7 @@ function nucleiPaint() {
 										}
 									}
 								}
-								else if ((firstPaint == "lightgrey")&&(color === "lime" )) {
+								else if ((firstPaint == negSelectedcolor)&&((color === poscolor ) || (color === negcolor )||(color === posSelectedcolor))) {
 									obj['label'] = -1;
 									flip = true;
 									// find a cell with the same id
@@ -1192,49 +1195,11 @@ function nucleiPaint() {
 										statusObj.samplesToFix(statusObj.samplesToFix()-1);
 										undo = false;
 									}
-									// else if the cell is labeled to -1 or 1
-									// else if( (obj['label'] == -1) || (obj['label'] == 1) ) {
 									else {
-
-										// var slide, centX, centY, sizeX, sizeY, loc, thumbNail, scale;
-										// var sampleobjs;
-										// var scale_cent = 32;
-										// var scale_size = 64.0;
-										// var fixes_length = fixes['samples'].length;
-
 										fixes['samples'].push(obj);
 										// call updateBoundColors to update to color
 										updateRegionBoundColors(obj);
 										statusObj.samplesToFix(statusObj.samplesToFix()+1);
-
-										// $.ajax({
-										// 	type: "POST",
-										// 	url: "db/getImgurls.php",
-										// 	data: {samples: obj},
-										// 	dataType: "json",
-										// 	success: function(data) {
-										//
-										// 		// console.log("Pass get");
-										// 		sampleobjs = data;
-										//
-										// 			scale = sampleobjs['scale'];
-										// 			slide = sampleobjs['slide'];
-										//
-										// 			centX = (sampleobjs['centX'] - (scale_cent * scale)) / sampleobjs['maxX'];
-										// 			centY = (sampleobjs['centY'] - (scale_cent * scale)) / sampleobjs['maxY'];
-										// 			sizeX = (scale_size * scale) / sampleobjs['maxX'];
-										// 			sizeY = (scale_size * scale) / sampleobjs['maxY'];
-										// 			loc = centX+","+centY+","+sizeX+","+sizeY;
-										//
-										// 			thumbNail = IIPServer+"FIF="+sampleobjs['path']+SlideLocPre+loc+"&WID=128"+SlideLocSuffix;
-										//
-										// 			fixes['samples'][fixes_length]['aurl'] = thumbNail;
-										//
-										// 		}
-										//
-										// });
-
-
 
 		          		}
 
@@ -1252,11 +1217,11 @@ function del(){
 		if( bound != null ) {
 			// check id
 				if( fixes['samples'][cell]['label'] == -1 ) {
-						bound.setAttribute('fill', 'lime');
-						bound.setAttribute("fill-opacity", "0.2");
+						bound.setAttribute('fill', poscolor);
+						bound.setAttribute("fill-opacity", trans);
 				} else if( fixes['samples'][cell]['label'] == 1 ) {
-						bound.setAttribute('fill', 'lightgrey');
-						bound.setAttribute("fill-opacity", "0.2");
+						bound.setAttribute('fill', negcolor);
+						bound.setAttribute("fill-opacity", trans);
 				}
 		}
 	}
@@ -1298,7 +1263,6 @@ function retrain() {
 		viewJSON['id'] = uid;
 		viewJSON['uid'] = uid;
 		viewJSON['target'] = 'retrainView';
-		viewJSON['classifier'] = classifier;
 		viewJSON['dataset'] = datapath;
 		viewJSON['samples'] = fixes['samples'];
 		viewJSON['width'] = curWidth;
@@ -1347,7 +1311,6 @@ function retrain() {
 				viewJSON['id'] = uid;
 				viewJSON['uid'] = uid;
 				viewJSON['target'] = 'retrainHeatmap';
-				viewJSON['classifier'] = classifier;
 				viewJSON['samples'] = fixes['samples'];
 				viewJSON['dataset'] = datapath;
 				viewJSON['slide'] = curSlide;
@@ -1565,11 +1528,6 @@ function viewSegmentation() {
 					gotoView();
 			} else {
 					gotoHeatmap();
-			}
-		}
-		else {
-			if( statusObj.scaleFactor() > 0.2 ) {
-				updateSlideSeg();
 			}
 		}
 
