@@ -500,7 +500,7 @@ function displayThumbNail(){
 	var currentPath = pyramids[$('#slideSel').prop('selectedIndex')];
 	var SlidePathPre = "";
 	var pyramidPath = "";
-  var scale_cen = 25;
+  var scale_cent = 25;
 	var scale_size = 50.0;
 
 	if (application == "region") {
@@ -523,8 +523,8 @@ function displayThumbNail(){
 	 		var box = "#box_" + (i + 1), thumbTag = "#thumb_" + (i + 1),
 					labelTag = "#label_" + (i + 1), loc, label;
 
-			centX = (selectedJSON['samples'][i]['centX'] - (scale_cen * selectedJSON['samples'][i]['scale'])) / selectedJSON['samples'][i]['maxX'];
-			centY = (selectedJSON['samples'][i]['centY'] - (scale_cen * selectedJSON['samples'][i]['scale'])) / selectedJSON['samples'][i]['maxY'];
+			centX = (selectedJSON['samples'][i]['centX'] - (scale_cent * selectedJSON['samples'][i]['scale'])) / selectedJSON['samples'][i]['maxX'];
+			centY = (selectedJSON['samples'][i]['centY'] - (scale_cent * selectedJSON['samples'][i]['scale'])) / selectedJSON['samples'][i]['maxY'];
 			sizeX = (scale_size * selectedJSON['samples'][i]['scale']) / selectedJSON['samples'][i]['maxX'];
 			sizeY = (scale_size * selectedJSON['samples'][i]['scale']) / selectedJSON['samples'][i]['maxY'];
 
