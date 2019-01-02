@@ -345,7 +345,7 @@ function updateSeg() {
 
 	    $.ajax({
 			type: "POST",
-       	 	url: "db/getnuclei_nn.php",
+       	 	url: "db/getnuclei_prime.php",
        	 	dataType: "json",
 			data: { slide: 	curSlide,
 					trainset: "none",
