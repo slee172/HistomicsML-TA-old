@@ -9,7 +9,7 @@ from copy import copy
 # initialize our flask application and redis server
 app = Flask(__name__)
 
-# initialize all settings
+# initialize settings
 s = settings.Settings()
 
 db = redis.StrictRedis(host=s.REDIS_HOST, port=s.REDIS_PORT, db=s.REDIS_DB)
@@ -28,18 +28,18 @@ def selectonly():
 	iteration = request.form['iteration']
 	dataset = request.form['dataset']
 
-	d = {"id": uid, "uid": uid, "target": target, "iteration": iteration, "dataset": dataset}
+	# d = {"id": uid, "uid": uid, "target": target, "iteration": iteration, "dataset": dataset}
+	d = dict(id=uid, uid=uid, target=target,
+			 iteration=iteration, dataset=dataset)
+
 	db.rpush(s.REQUEST_QUEUE, json.dumps(d))
+
 	while True:
 		output = db.get(uid)
 		if output is not None:
-			# output = output.decode("utf-8")
-			# data = json.loads(output)
 			data = copy(output)
-			# db.delete(uid)
 			break
-			# time.sleep(s.CLIENT_SLEEP)
-	# db.ltrim(s.REQUEST_QUEUE, 1, -1)
+
 	db.flushdb()
 	return jsonify(data)
 
@@ -56,22 +56,24 @@ def save():
 	dataset = request.form['dataset']
 	reloaded = request.form['reloaded']
 
-	d = {"id": uid, "uid": uid, "target": target,
-	"classifier": classifier, "reloaded": reloaded,
-	"posclass": posclass, "negclass": negclass,
-	"iteration": iteration, "dataset": dataset}
+	# d = {"id": uid, "uid": uid, "target": target,
+	# "classifier": classifier, "reloaded": reloaded,
+	# "posclass": posclass, "negclass": negclass,
+	# "iteration": iteration, "dataset": dataset}
+
+	d = dict(id=uid, uid=uid, target=target,
+			 classifier=classifier, reloaded=reloaded,
+			 posclass=posclass, negclass=negclass,
+			 iteration=iteration, dataset=dataset)
 
 	db.rpush(s.REQUEST_QUEUE, json.dumps(d))
+
 	while True:
 		output = db.get(uid)
 		if output is not None:
-			# output = output.decode("utf-8")
-			# data = json.loads(output)
 			data = copy(output)
-			# db.delete(uid)
 			break
-			# time.sleep(s.CLIENT_SLEEP)
-	# db.ltrim(s.REQUEST_QUEUE, 1, -1)
+
 	db.flushdb()
 	return jsonify(data)
 
@@ -102,15 +104,14 @@ def retrainView():
 	d = json.loads(request.data)
 	uid = d.get('uid')
 	db.rpush(s.REQUEST_QUEUE, json.dumps(d))
+
 	while True:
 		output = db.get(uid)
 		if output is not None:
-			# output = output.decode("utf-8")
-			# data = json.loads(output)
 			data_retrainview = copy(output)
 			db.delete(uid)
 			break
-		# data["success"] = True
+
 	db.flushdb()
 	return jsonify(data_retrainview)
 
@@ -121,16 +122,14 @@ def retrainHeatmap():
 	d = json.loads(request.data)
 	uid = d.get('uid')
 	db.rpush(s.REQUEST_QUEUE, json.dumps(d))
+
 	while True:
 		output = db.get(uid)
 		if output is not None:
-			# output = output.decode("utf-8")
-			# data = json.loads(output)
 			data_retrainheatmap = copy(output)
 			db.delete(uid)
 			break
-			# time.sleep(s.SLEEP)
-		# data["success"] = True
+
 	db.flushdb()
 	return jsonify(data_retrainheatmap)
 
@@ -144,9 +143,12 @@ def reload():
 	dataset = request.form['dataset']
 	trainingSetName = request.form['trainingSetName']
 
-	d = {"id": uid, "uid": uid, "target": target,
-	"trainingSetName": trainingSetName, "dataset": dataset
-	}
+	# d = {"id": uid, "uid": uid, "target": target,
+	# "trainingSetName": trainingSetName, "dataset": dataset
+	# }
+
+	d = dict(id=uid, uid=uid, target=target,
+			 trainingSetName=trainingSetName, dataset=dataset)
 
 	db.rpush(s.REQUEST_QUEUE, json.dumps(d))
 	while True:
@@ -156,7 +158,6 @@ def reload():
 			break
 
 	db.flushdb()
-	# time.sleep(s.SLEEP)
 	return jsonify(data)
 
 
@@ -184,16 +185,13 @@ def heatmap():
 	d = json.loads(request.data)
 	uid = d.get('uid')
 	db.rpush(s.REQUEST_QUEUE, json.dumps(d))
+
 	while True:
 		output = db.get(uid)
 		if output is not None:
-			# output = output.decode("utf-8")
-			# data = json.loads(output)
 			data = copy(output)
-			# db.delete(uid)
 			break
-			# time.sleep(s.CLIENT_SLEEP)
-		# data["success"] = True
+
 	db.flushdb()
 	return jsonify(data)
 
@@ -204,16 +202,13 @@ def heatmapAll():
 	d = json.loads(request.data)
 	uid = d.get('uid')
 	db.rpush(s.REQUEST_QUEUE, json.dumps(d))
+
 	while True:
 		output = db.get(uid)
 		if output is not None:
-			# output = output.decode("utf-8")
-			# data = json.loads(output)
 			data = copy(output)
-			# db.delete(uid)
 			break
-			# time.sleep(s.CLIENT_SLEEP)
-		# data["success"] = True
+
 	db.flushdb()
 	return jsonify(data)
 
@@ -225,20 +220,16 @@ def review():
 	target = request.form['target']
 	dataset = request.form['dataset']
 
-	d = {"id": uid, "uid": uid, "target": target,
-		"dataset": dataset}
+	d = dict(id=uid, uid=uid, target=target, dataset=dataset)
 
 	db.rpush(s.REQUEST_QUEUE, json.dumps(d))
+
 	while True:
 		output = db.get(uid)
 		if output is not None:
-			# output = output.decode("utf-8")
-			# data = json.loads(output)
 			data = copy(output)
-			# db.delete(uid)
 			break
-			# time.sleep(s.CLIENT_SLEEP)
-		# data["success"] = True
+
 	db.flushdb()
 	return jsonify(data)
 
@@ -251,21 +242,17 @@ def reviewSave():
 	samples = request.form['samples']
 	dataset = request.form['dataset']
 
-	d = {"id": uid, "uid": uid, "target": target,
-	"samples": samples, "dataset": dataset
-	}
+	d = dict(id=uid, uid=uid, target=target,
+			 samples=samples, dataset=dataset)
 
 	db.rpush(s.REQUEST_QUEUE, json.dumps(d))
+
 	while True:
 		output = db.get(uid)
 		if output is not None:
-			# output = output.decode("utf-8")
-			# data = json.loads(output)
-			data = copy(output)
-			# db.delete(uid)
+			data = output
 			break
-			# time.sleep(s.CLIENT_SLEEP)
-		# data["success"] = True
+
 	db.flushdb()
 	return jsonify(data)
 
@@ -278,20 +265,16 @@ def cancel():
 	target = request.form['target']
 	dataset = request.form['dataset']
 
-	d = {"id": uid, "uid": uid, "target": target,
-		"dataset": dataset}
+	d = dict(id=uid, uid=uid, target=target, dataset=dataset)
 
 	db.rpush(s.REQUEST_QUEUE, json.dumps(d))
+
 	while True:
 		output = db.get(uid)
 		if output is not None:
-			# output = output.decode("utf-8")
-			# data = json.loads(output)
 			data = copy(output)
-			# db.delete(uid)
 			break
-			# time.sleep(s.CLIENT_SLEEP)
-		# data["success"] = True
+
 	db.flushdb()
 	return jsonify(data)
 
