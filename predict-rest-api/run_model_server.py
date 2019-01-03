@@ -696,10 +696,7 @@ def run():
                 print "Augment ... ", len(retrain_v.samples)
                 t0 = time()
                 for sample in retrain_v.samples:
-
                     # init sample and augment
-                    # init_sample = {'id': 0, 'f_idx': 0, 'aurl':0, 'feature':0, 'label':0, 'iteration':0, 'centX':0, 'centY':0, 'slideIdx':0, 'slide':0}
-                    # init_augment = {'id': [], 'feature':[], 'label':[]}
                     init_sample = dict(
                         id=0, f_idx=0, checkpoints=0,
                         aurl=None, feature=None, label=0,
@@ -710,7 +707,7 @@ def run():
                         id=[], checkpoints=[], feature=[], label=[]
                     )
 
-                    # check db_id in users samples
+                    # remove samples stored if it already exists
                     remove_idx = []
                     for u in range(len(uset.users[uidx]['samples'])):
                         if uset.users[uidx]['samples'][u]['id'] == sample['id']:
@@ -837,9 +834,6 @@ def run():
 
                 for sample in retrain_h.samples:
                     # init sample and augment
-                    # init_sample = {'id': 0, 'f_idx': 0, 'aurl':0, 'feature':0, 'label':0, 'iteration':0, 'centX':0, 'centY':0, 'slideIdx':0, 'slide':0}
-                    # init_augment = {'id': 0, 'feature':[], 'label':[]}
-
                     init_sample = dict(
                         id=0, f_idx=0, checkpoints=0,
                         aurl=None, feature=None, label=0,
@@ -850,7 +844,7 @@ def run():
                         id=[], checkpoints=[], feature=[], label=[]
                     )
 
-                    # check db_id in users samples
+                    # remove samples stored if it already exists
                     remove_idx = []
                     for u in range(len(uset.users[uidx]['samples'])):
                         if uset.users[uidx]['samples'][u]['id'] == sample['id']:
@@ -985,16 +979,15 @@ def run():
                 db.ltrim(set.REQUEST_QUEUE, len(q_uid), -1)
 
             if target == 'reviewSave':
-                # find sample id and modify labels
+                # modify labels if they are changed on review tab
                 for q_sample in q_samples:
                     for sample in uset.users[uidx]['samples']:
                         if sample['id'] == q_sample['id']:
-							# if q_sample['label'] == 1:
-							# 	sample['label'] = 1
-							# elif q_sample['label'] == -1:
-							# 	sample['label'] = 0
-							# else:
                             sample['label'] = 1 if q_sample['label'] == 1 else 0
+
+                    for sample in uset.users[uidx]['augments']:
+                        if sample['id'][0] == q_sample['id']:
+                            sample['label'][:] = 1 if q_sample['label'] == 1 else 0
 
                 data = {"success": 'pass'}
                 db.set(q_uid, json.dumps(data))
