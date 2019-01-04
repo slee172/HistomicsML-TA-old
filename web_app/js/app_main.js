@@ -261,7 +261,7 @@ function resetAlServer() {
 		url: "php/cancelSession_nn.php",
 		data: "",
 		success: function() {
-			window.location = "index_home.html?application="+application;
+			window.location = "index.html?application="+application;
 		}
 	});
 

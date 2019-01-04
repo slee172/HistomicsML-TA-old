@@ -45,7 +45,7 @@ $(function() {
 
     application = $_GET("application");
 
-    document.getElementById("home").setAttribute("href","index_home.html?application="+application);
+    document.getElementById("home").setAttribute("href","index.html?application="+application);
     document.getElementById("nav_select").setAttribute("href","grid.html?application="+application);
     document.getElementById("nav_review").setAttribute("href","review.html?application="+application);
     document.getElementById("viewer").setAttribute("href","viewer.html?application="+application);

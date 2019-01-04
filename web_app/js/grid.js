@@ -65,7 +65,7 @@ $(function() {
 	application = $_GET("application");
 	// selectedJSON = JSON.parse($_GET("json"));
 
-	document.getElementById("home").setAttribute("href","index_home.html?application="+application);
+	document.getElementById("home").setAttribute("href","index.html?application="+application);
 	document.getElementById("nav_review").setAttribute("href","review.html?application="+application);
 	document.getElementById("viewer").setAttribute("href","viewer.html?application="+application);
 	document.getElementById("nav_heatmaps").setAttribute("href","heatmaps.html?application="+application);
@@ -600,7 +600,7 @@ function updateClassStatus(sample) {
 	} else {
 		$(labelTag).text(negClass);
 		label.addClass("negLabel");
-	} 
+	}
 
 	// if( sampleDataJson['samples'][sample]['label'] === 1 ) {
 	// 	$(labelTag).text(posClass);
@@ -651,7 +651,7 @@ function cancel() {
 		url: "php/cancelSession_nn.php",
 		data: "",
 		success: function() {
-			window.location = "index_home.html?application="+application;
+			window.location = "index.html?application="+application;
 		}
 	});
 }

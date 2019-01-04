@@ -92,7 +92,7 @@ $(function() {
 
 	application = $_GET("application");
 
-	document.getElementById("home").setAttribute("href","index_home.html?application="+application);
+	document.getElementById("home").setAttribute("href","index.html?application="+application);
 	document.getElementById("nav_select").setAttribute("href","grid.html?application="+application);
 	document.getElementById("viewer").setAttribute("href","viewer.html?application="+application);
 	document.getElementById("nav_review").setAttribute("href","review.html?application="+application);
@@ -168,7 +168,7 @@ $(function() {
 				// Zoomed in, show boundaries hide heatmap
 				$('#anno').show();
 				$('#heatmapGrp').hide();
-				
+
 			} else {
 
 				if ( isretrained ) {
@@ -1637,7 +1637,7 @@ function cancel() {
 		url: "php/cancelSession_nn.php",
 		data: "",
 		success: function() {
-			window.location = "index_home.html?application="+application;
+			window.location = "index.html?application="+application;
 		}
 	});
 }

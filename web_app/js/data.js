@@ -39,7 +39,7 @@ $(function() {
 	$("#applicationSeldel").val(application);
 
 	// document.getElementById("index").setAttribute("href","index.html");
-	document.getElementById("home").setAttribute("href","index_home.html?application="+application);
+	document.getElementById("home").setAttribute("href","index.html?application="+application);
 	document.getElementById("viewer").setAttribute("href","viewer.html?application="+application);
 	document.getElementById("nav_reports").setAttribute("href","reports.html?application="+application);
 	document.getElementById("nav_data").setAttribute("href","data.html?application="+application);

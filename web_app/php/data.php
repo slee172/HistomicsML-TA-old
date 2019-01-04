@@ -212,7 +212,7 @@ $dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
 	}
 	else{
 		echo "<script type='text/javascript'>window.alert('Data import is completed !! ');
-		window.location.href = '../index_home.html?application=".$_POST['application']."';</script>";
+		window.location.href = '../index.html?application=".$_POST['application']."';</script>";
 		exit;
 	}
 	/************	End dataset importing************/

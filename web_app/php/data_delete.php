@@ -57,7 +57,7 @@
 	mysqli_close($dbConn);
 
 	echo "<script type='text/javascript'>window.alert('$deleteDatasetSel is removed !! ');
-	window.location.href = '../index_home.html?application=".$application."';</script>";
+	window.location.href = '../index.html?application=".$application."';</script>";
 	exit;
 
 ?>

@@ -72,7 +72,7 @@
 
 	if(isset($isClassifyName)) {
 		echo "<script type='text/javascript'>window.alert('Classifier: $isClassifyName already exists !! ');
-		window.location.href = '../index_home.html?application=region';</script>";;
+		window.location.href = '../index.html?application=region';</script>";;
 	}
 
 	else {
