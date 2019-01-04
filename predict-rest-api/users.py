@@ -38,7 +38,6 @@ class Users():
 						label=0, iteration=0, centX=0, centY=0,
 						slideIdx=0, slide=None
 					)
-					# {'id': 0, 'f_idx': 0, 'aurl':0, 'feature':0, 'label':0, 'iteration':0, 'centX':0, 'centY':0, 'slideIdx':0, 'slide':0}
 					# add feature
 					init_sample['id'] = c['db_id'][:][i, 0]
 					init_sample['checkpoints'] = c['checkpoints'][:][i, 0]
@@ -60,8 +59,6 @@ class Users():
 					init_augment = dict(
 						id=0, checkpoints=0, feature=0, label=0
 					)
-					# {'id': [], 'feature':[], 'label':[]}
-
 					a_featureSet = np.zeros((agen.AUG_BATCH_SIZE, self.FEATURE_DIM)).astype(np.float32)
 					a_labelSet = np.zeros((agen.AUG_BATCH_SIZE, )).astype(np.uint8)
 					a_idSet = []
