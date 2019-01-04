@@ -28,7 +28,6 @@ var uid = "";
 var classifier = "";
 var negClass = "";
 var posClass = "";
-var application = "";
 var strlink = "";
 var superpixelSize = 0;
 var iteration = 0;
@@ -39,8 +38,6 @@ var iteration = 0;
 //
 //
 $(function() {
-
-	application = $_GET("application");
 
 	var	datasetSel = $("#datasetSel");
 
@@ -67,8 +64,6 @@ $(function() {
 				$('#nav_review').hide();
 				// $('#nav_survival').hide();
 
-				// document.getElementById("index").setAttribute("href","index.html");
-
 			} else {
 				// There's an active session, disable the "start session"
 				// form.
@@ -87,24 +82,10 @@ $(function() {
 				$('#nav_data').hide();
 				// $('#nav_validation').hide();
 
-				// document.getElementById("index").removeAttribute('href');
-
 				// TODO - Populate the text fields with the session values.
 				// This way we can see the criteria for the
 				// current session
 			}
-
-			document.getElementById("viewer").setAttribute("href","viewer.html?application="+application);
-			document.getElementById("nav_reports").setAttribute("href","reports.html?application="+application);
-			document.getElementById("nav_select").setAttribute("href","grid.html?application="+application);
-			document.getElementById("nav_heatmaps").setAttribute("href","heatmaps.html?application="+application);
-			document.getElementById("nav_data").setAttribute("href","data.html?application="+application);
-			// document.getElementById("nav_validation").setAttribute("href","validation.html?application="+application);
-			// document.getElementById("nav_survival").setAttribute("href","survival.html?application="+application);
-
-			$("#applicationSel").val(application);
-			$("#applicationSelreload").val(application);
-			//$("#applicationSel").css("background-color", "gray");
 
 		}
 	});
@@ -114,7 +95,7 @@ $(function() {
 	$.ajax({
 		type: "POST",
 		url: "db/getdatasets.php",
-		data: { application: application },
+		data: {},
 		dataType: "json",
 		success: function(data) {
 
@@ -261,7 +242,7 @@ function resetAlServer() {
 		url: "php/cancelSession_nn.php",
 		data: "",
 		success: function() {
-			window.location = "index.html?application="+application;
+			window.location = "index.html";
 		}
 	});
 

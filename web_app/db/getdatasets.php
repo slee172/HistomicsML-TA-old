@@ -1,7 +1,7 @@
 <?php
 
 //
-//	Copyright (c) 2014-2017, Emory University
+//	Copyright (c) 2014-2019, Emory University
 //	All rights reserved.
 //
 //	Redistribution and use in source and binary forms, with or without modification, are
@@ -34,25 +34,10 @@
 		Return as a json object
 	*/
 
-	$application = $_POST['application'];
-	write_log("INFO","Application: ".$application);
 	$dbConn = guestConnect();
-	$sql = "";
 
-	if( $application == "nuclei" ) {
-		$sql = "SELECT name,features_file,superpixel_size from datasets
-			 where not (features_file like '%spfeatures%' OR features_file like '%pofeatures%') order by name";
-	}
-	elseif( $application == "region" ) {
-		$sql = "SELECT name,features_file,superpixel_size from datasets
-			where features_file like '%spfeatures%' order by name";
-	 }
-	 elseif( $application == "cell" ) {
-		 $sql = "SELECT name,features_file,superpixel_size from datasets
-	 		where features_file like '%pofeatures%' order by name";
-	 }else{
-		 log_error("application selection failed:  ");
-	 }
+	$sql = "SELECT name,features_file,superpixel_size from datasets
+		where features_file like '%spfeatures%' order by name";
 
 	 if( $result = mysqli_query($dbConn, $sql) ) {
 
