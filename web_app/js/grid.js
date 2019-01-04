@@ -295,15 +295,23 @@ function thumbDoubleClick(box) {
 	var index = boxes.indexOf(box);
 	var label = sampleDataJson['samples'][index]['label'];
 
-	// Toggle through the 3 states, pos, neg and ignore
+	// Toggle through the 2 states, pos, neg
 	//
 	if( label === 1 ) {
 		sampleDataJson['samples'][index]['label'] = -1;
-	} else if( label === -1 ) {
-		sampleDataJson['samples'][index]['label'] = 0;
 	} else {
 		sampleDataJson['samples'][index]['label'] = 1;
 	}
+
+	// Toggle through the 3 states, pos, neg
+	// if( label === 1 ) {
+	// 	sampleDataJson['samples'][index]['label'] = -1;
+	// } else if( label === -1 ) {
+	// 	sampleDataJson['samples'][index]['label'] = 0;
+	// } else {
+	// 	sampleDataJson['samples'][index]['label'] = 1;
+	// }
+
 	updateClassStatus(index);
 };
 
@@ -583,19 +591,27 @@ function updateClassStatus(sample) {
 		label = $('#box_'+(parseInt(sample)+1)).children(".classLabel")
 
 	label.removeClass("negLabel");
-	label.removeClass("ignoreLabel");
+	// label.removeClass("ignoreLabel");
 	label.removeClass("posLabel");
 
 	if( sampleDataJson['samples'][sample]['label'] === 1 ) {
 		$(labelTag).text(posClass);
 		label.addClass("posLabel");
-	} else if( sampleDataJson['samples'][sample]['label'] === -1 ) {
+	} else {
 		$(labelTag).text(negClass);
 		label.addClass("negLabel");
-	} else {
-		$(labelTag).text("Ignore");
-		label.addClass("ignoreLabel");
-	}
+	} 
+
+	// if( sampleDataJson['samples'][sample]['label'] === 1 ) {
+	// 	$(labelTag).text(posClass);
+	// 	label.addClass("posLabel");
+	// } else if( sampleDataJson['samples'][sample]['label'] === -1 ) {
+	// 	$(labelTag).text(negClass);
+	// 	label.addClass("negLabel");
+	// } else {
+	// 	$(labelTag).text("Ignore");
+	// 	label.addClass("ignoreLabel");
+	// }
 }
 
 
