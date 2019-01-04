@@ -1,7 +1,7 @@
 <?php
 
 //
-//	Copyright (c) 2014-2018, Emory University
+//	Copyright (c) 2014-2019, Emory University
 //	All rights reserved.
 //
 //	Redistribution and use in source and binary forms, with or without modification, are
@@ -31,8 +31,6 @@
 	require 'hostspecs.php';
 
 	session_start();
-
-	$application = $_POST['application'];
 
 	$jsonData = array();
 

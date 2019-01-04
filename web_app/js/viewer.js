@@ -63,7 +63,6 @@ var uncertMin = 0.0, uncertMax = 0.0, classMin = 0.0, classMax = 0.0;
 
 // check if the screen is panned or not. Defalut value is false
 var ispannedXY = false;
-var application = "";
 var target = "";
 var iteration = 0;
 var datapath = "";
@@ -89,18 +88,6 @@ $(function() {
 	// gets x and y positions
 	pannedX = $_GET('x_pos');
 	pannedY = $_GET('y_pos');
-
-	application = $_GET("application");
-
-	document.getElementById("home").setAttribute("href","index.html?application="+application);
-	document.getElementById("nav_select").setAttribute("href","grid.html?application="+application);
-	document.getElementById("viewer").setAttribute("href","viewer.html?application="+application);
-	document.getElementById("nav_review").setAttribute("href","review.html?application="+application);
-	document.getElementById("nav_heatmaps").setAttribute("href","heatmaps.html?application="+application);
-	document.getElementById("nav_reports").setAttribute("href","reports.html?application="+application);
-	document.getElementById("nav_data").setAttribute("href","data.html?application="+application);
-	// document.getElementById("nav_validation").setAttribute("href","validation.html?application="+application);
-	// document.getElementById("nav_survival").setAttribute("href","survival.html?application="+application);
 
 	// Create the slide zoomer, update slide count etc...
 	// We will load the tile pyramid after the slide list is loaded
@@ -379,7 +366,7 @@ function updateDatasetList() {
 	$.ajax({
 		type: "POST",
 		url: "db/getdatasets.php",
-		data: { application: application },
+		data: {},
 		dataType: "json",
 		success: function(data) {
 
@@ -436,7 +423,7 @@ function updateSlideList() {
 					dataType: "json",
 					data: { uid:	uid,
 							slide: 	curSlide,
-							application: 	application},
+							},
 					success: function(data) {
 
 						curWidth = data[0];
@@ -487,7 +474,7 @@ function updateSlide() {
 		dataType: "json",
 		data: { uid:	uid,
 				slide: 	curSlide,
-				application: 	application},
+				},
 		success: function(data) {
 
 			curWidth = data[0];
@@ -507,11 +494,8 @@ function updateSlide() {
 					heatmapGrp.parentNode.removeChild(heatmapGrp);
 				}
 
-				// if (application == "region"){
-				// 	updateSlideSeg();
-				// } else{
 				updateSeg();
-				// }
+
 			}
 
 		}
@@ -554,7 +538,6 @@ function updateSlideSeg() {
 			right:	right,
 			top:	top,
 			bottom:	bottom,
-			application: application,
 	},
 
 
@@ -637,24 +620,14 @@ function updateHeatmap() {
 
 	var slide_width, slide_height;
 
-	if (application == "region"){
-
-			gotoHeatmap();
-
-	} else{
-		heatmapLoaded = false;
-		updateSeg();
-
-	}
+	gotoHeatmap();
 
 }
 
 
 function updatePaint() {
 
-	if (application == "region"){
 			isNegPaint = true;
-	}
 }
 
 
@@ -721,7 +694,6 @@ function getSampleColors() {
 					bottom:	bottom,
 					dataset: curDataset,
 					trainset: classifier,
-					application: application,
 					classification: JSON.stringify(viewresultJson)
 			},
 
@@ -750,37 +722,18 @@ function getSampleColors() {
 					annoGrp.appendChild(segGrp);
 
 
-					if (application == "cell"){
-						for( cell in data ) {
-							ele = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+					for( cell in data ) {
+						ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
 
-							ele.setAttribute('cx', data[cell][1]);
-							ele.setAttribute('cy', data[cell][2]);
-							ele.setAttribute('r', 2);
-							ele.setAttribute('id', 'N' + data[cell][0]);
-							ele.setAttribute('stroke', data[cell][3]);
-							ele.setAttribute('fill',  data[cell][3]);
+						ele.setAttribute('points', data[cell][0]);
+						ele.setAttribute('id', 'N' + data[cell][1]);
+						ele.setAttribute('stroke', 'aqua');
+						// ele.setAttribute('stroke-width', '2');
+						ele.setAttribute('fill', data[cell][2]);
+						ele.setAttribute("fill-opacity", "0.2");
+						ele.setAttribute("stroke-dasharray", "5,5");
 
-							segGrp.appendChild(ele);
-						}
-					} else{
-						for( cell in data ) {
-							ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-
-							ele.setAttribute('points', data[cell][0]);
-							ele.setAttribute('id', 'N' + data[cell][1]);
-							if (application == "region"){
-								ele.setAttribute('stroke', 'aqua');
-								// ele.setAttribute('stroke-width', '2');
-								ele.setAttribute('fill', data[cell][2]);
-								ele.setAttribute("fill-opacity", "0.2");
-								ele.setAttribute("stroke-dasharray", "5,5");
-							} else{
-								ele.setAttribute('stroke', data[cell][2]);
-								ele.setAttribute('fill', 'none');
-							}
-							segGrp.appendChild(ele);
-						}
+						segGrp.appendChild(ele);
 					}
 
 
@@ -804,8 +757,6 @@ function getSampleColors() {
 							var bound = document.getElementById("N"+fixes['samples'][cell]['id']);
 
 							if( bound != null ) {
-								if (application == "region"){
-
 									if( fixes['samples'][cell]['label'] == 1 ) {
 											bound.setAttribute('fill', 'lime');
 											bound.setAttribute("fill-opacity", "0.2");
@@ -813,11 +764,6 @@ function getSampleColors() {
 											bound.setAttribute('fill', 'lightgrey');
 											bound.setAttribute("fill-opacity", "0.2");
 									}
-									// bound.setAttribute("fill", "yellow");
-									// bound.setAttribute("fill-opacity", "0.2");
-								} else{
-									bound.setAttribute('stroke', 'yellow');
-								}
 							}
 						}
 					}
@@ -856,7 +802,6 @@ function gotoView() {
 		viewJSON['bottom'] = Math.round(bottom).toString();
 		// viewJSON['dataset'] = dataset;
 		// viewJSON['trainset'] = trainset;
-		viewJSON['application'] = application;
 
 		$.ajax({
 				type: 'POST',
@@ -888,7 +833,6 @@ function gotoHeatmap() {
 	viewJSON['target'] = 'heatmap';
 	viewJSON['dataset'] = datapath;
 	viewJSON['slide'] = curSlide;
-	viewJSON['application'] = application;
 	viewJSON['width'] = curWidth;
 	viewJSON['height'] = curHeight;
 	viewJSON['index'] = 0;
@@ -984,15 +928,8 @@ function updateBoundColors(obj) {
 
 		if( bound != null ) {
 			if (fixes['samples'][cell]['id'] == obj['id']){
-				if (application == "region"){
 					bound.setAttribute('fill', 'yellow');
 					bound.setAttribute("fill-opacity", "0.2");
-				} else if (application == "cell"){
-					bound.setAttribute('stroke', 'yellow');
-					bound.setAttribute('fill', 'yellow');
-				} else{
-				bound.setAttribute('stroke', 'yellow');
-				}
 			}
 		}
 	}
@@ -1033,32 +970,12 @@ function undoBoundColors(obj) {
 			if (fixes['samples'][cell]['id'] == obj['id']){
 				// check label
 				if( fixes['samples'][cell]['label'] == -1 ) {
-					if (application == "region"){
-						bound.setAttribute('fill', 'lime');
-						bound.setAttribute("fill-opacity", "0.2");
-
-					} else if(application == "cell"){
-						bound.setAttribute('stroke', 'lime');
-						bound.setAttribute('fill', 'lime');
-
-					}
-					else{
-						bound.setAttribute('stroke', 'lime');
-					}
-
-				} else if( fixes['samples'][cell]['label'] == 1 ) {
-					if (application == "region"){
+					bound.setAttribute('fill', 'lime');
+					bound.setAttribute("fill-opacity", "0.2");
+				}
+				else if( fixes['samples'][cell]['label'] == 1 ) {
 						bound.setAttribute('fill', 'lightgrey');
 						bound.setAttribute("fill-opacity", "0.2");
-
-					} else if (application == "cell"){
-						bound.setAttribute('stroke', 'lightgrey');
-						bound.setAttribute('fill', 'lightgrey');
-
-					}else{
-						bound.setAttribute('stroke', 'lightgrey');
-					}
-
 				}
 			}
 		}
@@ -1097,7 +1014,6 @@ function nucleiPaint() {
 		    data:   { slide:    curSlide,
 		              cellX:    Math.round(statusObj.mouseImgX()),
 		              cellY:    Math.round(statusObj.mouseImgY()),
-									application: application,
 		            },
 		    success: function(data) {
 	            if( data !== null ) {
@@ -1314,7 +1230,6 @@ function retrain() {
 		viewJSON['top'] = Math.round(top).toString();
 		viewJSON['bottom'] = Math.round(bottom).toString();
 		viewJSON['iteration'] = iteration;
-		viewJSON['application'] = application;
 
 		$.ajax({
 			type: "POST",
@@ -1357,7 +1272,6 @@ function retrain() {
 				viewJSON['dataset'] = datapath;
 				viewJSON['slide'] = curSlide;
 				viewJSON['iteration'] = iteration;
-				viewJSON['application'] = application;
 				viewJSON['width'] = curWidth;
 				viewJSON['height'] = curHeight;
 
@@ -1471,25 +1385,12 @@ function onMouseLeave(event) {
 
 
 function onMouseClick(event) {
-		if (application == "region"){
-			event.preventDefaultAction = true;
-		}
-		else{
-	    clickCount++;
-	    if( clickCount === 1 ) {
-	        // If no click within 250ms, treat it as a single click
-	        singleClickTimer = setTimeout(function() {
-	                    // Single click
-	                    clickCount = 0;
-	                }, 250);
-	    }
-		}
+		event.preventDefaultAction = true;
 		isDragged = false;
 }
 
 function onViewerDrag(event) {
 	isDragged = true;
-	if (application == "region"){
 		if (paintOn == true) {
 			event.preventDefaultAction = true;
 			nucleiPaint();
@@ -1505,10 +1406,6 @@ function onViewerDrag(event) {
 			// else {
 			// 	nucleiNegPaint();
 			// }
-		}
-		else{
-			event.preventDefaultAction = false;
-		}
 	}
 }
 
@@ -1637,7 +1534,7 @@ function cancel() {
 		url: "php/cancelSession_nn.php",
 		data: "",
 		success: function() {
-			window.location = "index.html?application="+application;
+			window.location = "index.html";
 		}
 	});
 }

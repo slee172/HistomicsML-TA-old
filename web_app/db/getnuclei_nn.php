@@ -47,7 +47,6 @@
 	$bottom = intval($_POST['bottom']);
 	$slide = $_POST['slide'];
 	$trainSet = $_POST['trainset'];
-	$application = $_POST['application'];
 	$classificationJSON = $_POST['classification'];
 	$classification = json_decode($classificationJSON, true);
 
@@ -66,10 +65,7 @@
 
 	}
 
-  $boundaryTablename = "boundaries";
-  if ($application == "region"){
-		$boundaryTablename = "sregionboundaries";
-	}
+	$boundaryTablename = "sregionboundaries";
 
 	$dbConn = guestConnect();
 	//$sql = 'SELECT boundary, id, centroid_x, centroid_y from "'.$boundaryTablename.'" where slide="'.$slide.'" AND centroid_x BETWEEN '.$left.' AND '.$right.' AND centroid_y BETWEEN '.$top.' AND '.$bottom;
@@ -83,14 +79,8 @@
 		while( $array = mysqli_fetch_row($result) ) {
 			$obj = array();
 
-			if ($application == "cell"){
-				$obj[] = $array[1];
-				$obj[] = $array[2];
-				$obj[] = $array[3];
-			} else{
-				$obj[] = $array[0];
-				$obj[] = $array[1];
-			}
+			$obj[] = $array[0];
+			$obj[] = $array[1];
 
 			if( $trainSet != "none" ) {
 				$tag = $array[2]."_".$array[3];
@@ -101,10 +91,8 @@
 				$obj[] = "aqua";
 			}
 
-			if ($application == "region"){
-				$obj[] = $array[2];
-				$obj[] = $array[3];
-			}
+			$obj[] = $array[2];
+			$obj[] = $array[3];
 
 			$jsonData[] = $obj;
 		}
