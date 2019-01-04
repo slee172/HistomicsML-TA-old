@@ -50,7 +50,6 @@ var curX = 0, curY = 0;
 var boundaryOn = true;
 var reloaded = false;
 var init_reloaded = false;
-var application = "";
 var superpixelSize = 0;
 var iteration = 0;
 // var dataSetPath = "";
@@ -61,15 +60,6 @@ var trainingSetName = "";
 //
 //
 $(function() {
-
-	application = $_GET("application");
-	// selectedJSON = JSON.parse($_GET("json"));
-
-	document.getElementById("home").setAttribute("href","index.html?application="+application);
-	document.getElementById("nav_review").setAttribute("href","review.html?application="+application);
-	document.getElementById("viewer").setAttribute("href","viewer.html?application="+application);
-	document.getElementById("nav_heatmaps").setAttribute("href","heatmaps.html?application="+application);
-	// document.getElementById("nav_survival").setAttribute("href","survival.html?application="+application);
 
 	if (statusObj.iteration() === 0){
 		// Display the progress dialog...
@@ -190,42 +180,11 @@ $(function() {
 			sampGrp.setAttribute('id', 'sample');
 			annoGrp.appendChild(sampGrp);
 
-			if (application == "region"){
-				ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-				ele.setAttribute('points', sampleDataJson['samples'][curBox]['boundary']);
-				ele.setAttribute('id', 'boundary');
-				ele.setAttribute('fill', 'yellow');
-				ele.setAttribute("fill-opacity", "0.2");
-			}	else {
-				ele = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-				ele.setAttribute('x', curX - 50);
-				ele.setAttribute('y', curY - 50);
-				ele.setAttribute('width', 100);
-				ele.setAttribute('height', 100);
-				ele.setAttribute('stroke', 'yellow');
-				ele.setAttribute('fill', 'none');
-				ele.setAttribute('stroke-width', 4);
-				ele.setAttribute('id', 'boundBox');
-				sampGrp.appendChild(ele);
-
-				if (application == "nuclei"){
-					ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-					ele.setAttribute('points', sampleDataJson['samples'][curBox]['boundary']);
-					ele.setAttribute('id', 'boundary');
-					ele.setAttribute('stroke', 'yellow');
-					ele.setAttribute('fill', 'none');
-				} else{
-					ele = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-					ele.setAttribute('cx', sampleDataJson['samples'][curBox]['centX']);
-					ele.setAttribute('cy', sampleDataJson['samples'][curBox]['centY']);
-					ele.setAttribute('r', 2);
-					ele.setAttribute('id', 'boundary');
-					ele.setAttribute('stroke', 'yellow');
-					ele.setAttribute('fill', 'yellow');
-				}
-			}
-
-
+			ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+			ele.setAttribute('points', sampleDataJson['samples'][curBox]['boundary']);
+			ele.setAttribute('id', 'boundary');
+			ele.setAttribute('fill', 'yellow');
+			ele.setAttribute("fill-opacity", "0.2");
 
 			if( boundaryOn ) {
 				ele.setAttribute('visibility', 'visible');
@@ -518,19 +477,17 @@ function updateSamples() {
 			var scale_cent = 25;
 			var scale_size = 50.0;
 
-			if (application == "region"){
-				if (superpixelSize == "8") {
-					scale_cent = 18;
-					scale_size = 32.0;
-				}
-				else if (superpixelSize == "16") {
-					scale_cent = 36;
-					scale_size = 64.0;
-				}
-				else {
-					scale_cent = 64;
-					scale_size = 128.0;
-				}
+			if (superpixelSize == "8") {
+				scale_cent = 18;
+				scale_size = 32.0;
+			}
+			else if (superpixelSize == "16") {
+				scale_cent = 36;
+				scale_size = 64.0;
+			}
+			else {
+				scale_cent = 64;
+				scale_size = 128.0;
 			}
 			// iteration = data['iteration'];
 			statusObj.iteration(iteration);
@@ -651,7 +608,7 @@ function cancel() {
 		url: "php/cancelSession_nn.php",
 		data: "",
 		success: function() {
-			window.location = "index.html?application="+application;
+			window.location = "index.html";
 		}
 	});
 }
@@ -718,8 +675,6 @@ function submitLabels() {
 	viewJSON['dataset'] = datapath;
 	viewJSON['samples'] = sampleDataJson['samples'];
 	viewJSON['iteration'] = iteration;
-	viewJSON['application'] = application;
-
 
 	$.ajax({
 			type: 'POST',
