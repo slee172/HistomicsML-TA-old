@@ -159,11 +159,16 @@ $(function() {
 
 			if( statusObj.scaleFactor() > 0.2 ) {
 
-				gotoView();
+				if (uid != null) {
+					gotoView();
+				}
+				else {
+						updateSlideSeg();
+				}
 				// Zoomed in, show boundaries hide heatmap
 				$('#anno').show();
 				$('#heatmapGrp').hide();
-
+				
 			} else {
 
 				if ( isretrained ) {
