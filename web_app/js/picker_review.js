@@ -1,5 +1,5 @@
 //
-//	Copyright (c) 2014-2018, Emory University
+//	Copyright (c) 2014-2019, Emory University
 //	All rights reserved.
 //
 //	Redistribution and use in source and binary forms, with or without modification, are
@@ -60,7 +60,6 @@ var updates = new Array();
 var cur_slide_num = -1;
 var sortable_group = "";
 var sortable_group_list = [];
-var application = "";
 
 var reloaded = false;
 
@@ -73,10 +72,6 @@ var superpixelSize = 0;
 //
 
 $(function() {
-
-	application = $_GET('application');
-	document.getElementById("revBtn").setAttribute("onClick", "window.location='picker_review.html?application="+application+"'");
-	document.getElementById("finishBtn").setAttribute("onClick", "window.location='picker.html?application="+application+"'");
 
 	// get slide host info
 	//
@@ -169,34 +164,12 @@ viewer.addHandler('close', function(event) {
 			sampGrp = document.createElementNS("http://www.w3.org/2000/svg", "g");
 			sampGrp.setAttribute('id', 'sample');
 			annoGrp.appendChild(sampGrp);
-			if (application == "region"){
-				ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-				ele.setAttribute('points', boundaries[cur_box]);
-				ele.setAttribute('id', 'boundary');
-				ele.setAttribute('stroke', 'yellow');
-				ele.setAttribute('fill', 'none');
-				ele.setAttribute('stroke-width', 4);
-			}else{
-				ele = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-
-				ele.setAttribute('x', curX - 50);
-				ele.setAttribute('y', curY - 50);
-				ele.setAttribute('width', 100);
-				ele.setAttribute('height', 100);
-				ele.setAttribute('stroke', 'yellow');
-				ele.setAttribute('fill', 'none');
-				ele.setAttribute('stroke-width', 4);
-				ele.setAttribute('id', 'boundBox');
-
-				sampGrp.appendChild(ele);
-
-				ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-				ele.setAttribute('points', boundaries[cur_box]);
-				ele.setAttribute('id', 'boundary');
-				ele.setAttribute('stroke', 'yellow');
-				ele.setAttribute('fill', 'none');
-			}
-
+			ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+			ele.setAttribute('points', boundaries[cur_box]);
+			ele.setAttribute('id', 'boundary');
+			ele.setAttribute('stroke', 'yellow');
+			ele.setAttribute('fill', 'none');
+			ele.setAttribute('stroke-width', 4);
 
 			if( boundaryOn ) {
 				ele.setAttribute('visibility', 'visible');
@@ -228,7 +201,7 @@ function genReview() {
   $.ajax({
 		type: "POST",
     url: "php/pickerReviewSamples.php",
-    data: {application: application},
+    data: {},
     dataType: "json",
     success: function(data) {
 
@@ -610,19 +583,17 @@ function displayOneslide(sampleArray, slide_num){
 		var scale_cent = 25.0;
 		var scale_size = 50.0;
 
-		if (application == "region"){
-			if (superpixelSize == "8") {
-				scale_cent = 18;
-				scale_size = 32.0;
-			}
-			else if (superpixelSize == "16") {
-				scale_cent = 36;
-				scale_size = 64.0;
-			}
-			else {
-				scale_cent = 64;
-				scale_size = 128.0;
-			}
+		if (superpixelSize == "8") {
+			scale_cent = 18;
+			scale_size = 32.0;
+		}
+		else if (superpixelSize == "16") {
+			scale_cent = 36;
+			scale_size = 64.0;
+		}
+		else {
+			scale_cent = 64;
+			scale_size = 128.0;
 		}
 		centX = (sampleArray[sample]['centX'] - (scale_cent * scale)) / sampleArray[sample]['maxX'];
 		centY = (sampleArray[sample]['centY'] - (scale_cent * scale)) / sampleArray[sample]['maxY'];
@@ -890,7 +861,7 @@ function saveTrainingSet() {
 				if( data['status'] === "PASS" ) {
 					console.log("Pos: "+data['posClass']+", Neg: "+data['negClass']);
 					window.alert("Test set saved to: " + data['filename']);
-					window.location = "validation.html?application="+application;
+					window.location = "validation.html";
 				} else {
 					window.alert("Unable to save test set");
 				}
@@ -909,7 +880,7 @@ function saveTrainingSet() {
 				if( data['status'] === "PASS" ) {
 					console.log("Pos: "+data['posClass']+", Neg: "+data['negClass']);
 					window.alert("Test set saved to: " + data['filename']);
-					window.location = "validation.html?application="+application;
+					window.location = "validation.html";
 				} else {
 					window.alert("Unable to save test set");
 				}

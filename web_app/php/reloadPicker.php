@@ -100,7 +100,7 @@
 			$_SESSION['posClass'] = $response['posName'];
 			$_SESSION['negClass'] = $response['negName'];
 			$_SESSION['reloaded'] = true;
-			header("Location: ../picker.html?application=".$_POST["applicationreload"]);
+			header("Location: ../picker.html");
 		} else {
 			echo "Unable to init session<br>";
 		}

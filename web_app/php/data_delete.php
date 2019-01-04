@@ -1,7 +1,7 @@
 <?php
 
 //
-//	Copyright (c) 2014-2017, Emory University
+//	Copyright (c) 2014-2019, Emory University
 //	All rights reserved.
 //
 //	Redistribution and use in source and binary forms, with or without modification, are
@@ -31,7 +31,6 @@
 	require 'hostspecs.php';
 
 	$deleteDatasetSel = $_POST['deleteDatasetSel'];
-	$application=$_POST['applicationdel'];
 
 	/************	Start existing dataset and slide name check ************/
 	// dataset name check
@@ -50,14 +49,14 @@
 	}
 	else{
 		echo "<script type='text/javascript'>window.alert('Data deletion cannot be processed !! ');
-		window.location.href = '../data.html?application=".$application."'';</script>";
+		window.location.href = '../data.html';</script>";
 		exit;
 	}
 
 	mysqli_close($dbConn);
 
 	echo "<script type='text/javascript'>window.alert('$deleteDatasetSel is removed !! ');
-	window.location.href = '../index.html?application=".$application."';</script>";
+	window.location.href = '../index.html';</script>";
 	exit;
 
 ?>

@@ -1,5 +1,5 @@
 //
-//	Copyright (c) 2014-2017, Emory University
+//	Copyright (c) 2014-2019, Emory University
 //	All rights reserved.
 //
 //	Redistribution and use in source and binary forms, with or without modification, are
@@ -39,18 +39,8 @@ var curDataset = "";
 var slideSet = null;
 var slideReq = null;
 var uid = null;
-var application = "";
 
 $(function() {
-
-    application = $_GET("application");
-
-    document.getElementById("home").setAttribute("href","index.html?application="+application);
-    document.getElementById("nav_select").setAttribute("href","grid.html?application="+application);
-    document.getElementById("nav_review").setAttribute("href","review.html?application="+application);
-    document.getElementById("viewer").setAttribute("href","viewer.html?application="+application);
-    document.getElementById("nav_heatmaps").setAttribute("href","heatmaps.html?application="+application);
-    // document.getElementById("nav_survival").setAttribute("href","survival.html?application="+application);
 
     // get slide host info
   	//

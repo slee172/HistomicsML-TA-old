@@ -155,41 +155,6 @@ function genHeatmaps_predict(viewJSONs) {
 }
 
 
-
-
-// function genHeatmaps() {
-//
-// 	// Display the progress dialog...
-// 	$('#progDiag').modal('show');
-//
-// 	$.ajax({
-// 		type: "POST",
-// 		url: "php/genAllHeatmaps_nn.php",
-// 		data: { dataset: curDataset,
-// 				uid: uid,
-// 				datapath: datapath,
-// 				application : application,
-// 			  },
-// 		dataType: "json",
-// 		success: function(data) {
-//
-// 			slideSet = data;
-//
-// 			for( var item in slideSet['scores'] ) {
-// 				createRow(Number(item) + 1, Number(item));
-// 			}
-//
-// 			// Hide progress dialog
-// 			$('#progDiag').modal('hide');
-//
-// 		},
-// 		failure: function() {
-// 			console.log("genAllHeatmaps failed");
-// 		}
-// 	});
-// }
-
-
 function createRow(rowNo, index) {
 
 	var container = document.getElementById('heatmaps');

@@ -40,7 +40,7 @@
 	// empty check for dataset name
 	if( empty($datasetName) ) {
 		echo "<script type='text/javascript'>window.alert('Dataset name is empty !! ');
-		window.location.href = '../data.html?application=".$_POST['application']."';</script>";
+		window.location.href = '../data.html';</script>";
 		exit;
 	}
 
@@ -66,7 +66,7 @@
 
 	if(isset($isDatasetName)) {
 		echo "<script type='text/javascript'>window.alert('Dataset: $isDatasetName already exists !! ');
-		window.location.href = '../data.html?application=".$_POST['application']."';</script>";
+		window.location.href = '../data.html';</script>";
 		exit;
 	}
 
@@ -83,11 +83,7 @@ $dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
 		exit;
 	}
 
-	$boundaryTablename = "boundaries";
-  if ($_POST['application'] == "region"){
-		$boundaryTablename = "sregionboundaries";
-	}
-
+	$boundaryTablename = "sregionboundaries";
 	// slide name check
 	$sql = 'SELECT DISTINCT slide FROM '.$boundaryTablename;
 	$slideArray = array();
@@ -154,7 +150,7 @@ $dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
 	}
 	else {
 		echo "<script type='text/javascript'>window.alert('Slides: Cannot retrieve slide names from database !! ');
-		window.location.href = '../data.html?application=".$_POST['application']."';</script>";
+		window.location.href = '../data.html';</script>";
 		exit;
 	}
 
@@ -175,7 +171,7 @@ $dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
 		}
 		else{
 			echo "<script type='text/javascript'>window.alert('Boundaries: Cannot import slide information to database !! ');
-			window.location.href = '../data.html?application=".$_POST['application']."';</script>";
+			window.location.href = '../data.html';</script>";
 			exit;
 		}
 		mysqli_close($link);
@@ -192,7 +188,7 @@ $dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
 
 	if( $result != 0 ) {
 		echo "<script type='text/javascript'>window.alert('Slidelist: Cannot create slide list');
-		window.location.href = '../data.html?application=".$_POST['application']."';</script>";
+		window.location.href = '../data.html';</script>";
 		exit;
 	}
 
@@ -207,12 +203,12 @@ $dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
 
 	if( $result != 0 ) {
 		echo "<script type='text/javascript'>window.alert('Dataset: Cannot import dataset to database !! ');
-		window.location.href = '../data.html?application=".$_POST['application']."';</script>";
+		window.location.href = '../data.html';</script>";
 		exit;
 	}
 	else{
 		echo "<script type='text/javascript'>window.alert('Data import is completed !! ');
-		window.location.href = '../index.html?application=".$_POST['application']."';</script>";
+		window.location.href = '../index.html';</script>";
 		exit;
 	}
 	/************	End dataset importing************/

@@ -72,7 +72,7 @@
 
 	if(isset($isClassifyName)) {
 		echo "<script type='text/javascript'>window.alert('Classifier: $isClassifyName already exists !! ');
-		window.location.href = '../index.html?application=region';</script>";;
+		window.location.href = '../index.html';</script>";;
 	}
 
 	else {
@@ -108,19 +108,6 @@
 	}
 	mysqli_close($dbConn);
 
-
-	// // Send init command to AL server
-	// //
-	// $init_data =  array( "command" => "init",
-	// 			   "name" => $_POST["classifiername"],
-	// 		 	   "dataset" => $_POST["dataset"],
-	// 		 	   "features" => $featureFile[0],
-	// 			   "posClass" => $_POST["posName"],
-	// 			   "negClass" => $_POST["negName"],
-	// 		 	   "uid" => $UID);
-	//
-	// $init_data = json_encode($init_data);
-
 	require 'hostspecs.php';
 
 		write_log("INFO", "Session '".$_POST["classifiername"]."' started");
@@ -136,10 +123,6 @@
 		$_SESSION['reloaded'] = false;
 		$_SESSION['init_reloaded'] = false;
 		$_SESSION['superpixelSize'] = $featureFile[1];
-		header("Location: ../prime.html?application=".$_POST['application']);
-	// } else {
-	//
-	// 	echo "Unable to init session<br>";
-	// }
+		header("Location: ../prime.html");
 	}
 ?>
