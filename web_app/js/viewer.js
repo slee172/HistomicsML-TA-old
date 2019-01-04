@@ -530,7 +530,7 @@ function updateSlideSeg() {
 
 	$.ajax({
 	type: "POST",
-			url: "db/getnuclei_naive.php",
+			url: "db/getsample.php",
 			dataType: "json",
 	data: {
 			slide: 	curSlide,
@@ -684,7 +684,7 @@ function getSampleColors() {
 	if (left > 0 && top > 0) {
 			$.ajax({
 			type: "POST",
-					url: "db/getnuclei_nn.php",
+					url: "db/getsamplecolor.php",
 					dataType: "json",
 			data: { uid:	uid,
 					slide: 	curSlide,

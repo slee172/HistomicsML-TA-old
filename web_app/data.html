@@ -87,9 +87,6 @@
 				<div class="col-sm-4 col-md-4 col-lg-4">
 
 						<form id="_form" name="_form" role="form" method="post" action="php/data.php">
-							<input type="hidden" class="form-control" id="applicationSel"
-									name="application" readonly="readonly">
-
 							<div class="form-group">
 								<label for="datasetName">Dataset name:</label>
 								<input type="text" class="form-control" id="datasetName"
@@ -122,8 +119,6 @@
 				</div>
 				<div class="col-sm-4 col-md-4 col-lg-4">
 							<form onsubmit="return confirm('Do you really want to delete this dataset?');" id="_form_delete" role="form" method="post" action="php/data_delete.php">
-								<input type="hidden" class="form-control" id="applicationSeldel"
-										name="applicationdel" readonly="readonly">
 								<div class="form-group">
 									<label for="deleteDatasetSel">Dataset to delete:
 									</label>

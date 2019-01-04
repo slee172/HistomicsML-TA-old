@@ -1,7 +1,7 @@
 <?php
 
 //
-//	Copyright (c) 2014-2017, Emory University
+//	Copyright (c) 2014-2019, Emory University
 //	All rights reserved.
 //
 //	Redistribution and use in source and binary forms, with or without modification, are
@@ -29,7 +29,6 @@
 
 	require '../db/logging.php';		// Also includes connect.php
 
-	$application = $_POST['application'];
 	$projectDir = $_POST['projectDir'];
 
 	$array_features = array();
@@ -39,21 +38,9 @@
 	    	while (($file = readdir($dh)) !== false){
 					$info = pathinfo($file);
 					if ($info["extension"] == "h5") {
-						if ($application == "nuclei") {
-							if ((strpos($file, 'pofeatures') === false) && (strpos($file, 'spfeatures') === false)) {
-								$array_features[] = $file;
-							}
-						}	else if ($application == "region") {
 							if (strpos($file, 'spfeatures') !== false) {
 								$array_features[] = $file;
-							}
-						}	else if ($application == "cell") {
-							if (strpos($file, 'pofeatures') !== false) {
-								$array_features[] = $file;
-							}
-						}	else{
-							log_error("Can't find ".$application);
-						}
+							}							
 				 }
 	    }
 	    closedir($dh);

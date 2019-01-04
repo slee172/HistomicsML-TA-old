@@ -29,7 +29,6 @@ var classifier = "";
 var negClass = "";
 var posClass = "";
 var curDataSet = "";
-var application = "";
 
 
 //
@@ -37,8 +36,6 @@ var application = "";
 //
 //
 $(function() {
-
-	application = $_GET("application");
 
 	// get session vars
 	//
@@ -59,23 +56,12 @@ $(function() {
 	});
 
 
-	// document.getElementById("index").setAttribute("href","index.html");
-	document.getElementById("home").setAttribute("href","index.html?application="+application);
-	document.getElementById("viewer").setAttribute("href","viewer.html?application="+application);
-	document.getElementById("nav_reports").setAttribute("href","reports.html?application="+application);
-	document.getElementById("nav_data").setAttribute("href","data.html?application="+application);
-	// document.getElementById("nav_validation").setAttribute("href","validation.html?application="+application);
-
-	$("#applicationSel").val(application);
-	$("#applicationSelreload").val(application);
-	$("#applicationSelvalidate").val(application);
-
 	// Populate Dataset dropdown
 	//
 	$.ajax({
 		type: "POST",
 		url: "db/getdatasets.php",
-		data: { application: application },
+		data: {},
 		dataType: "json",
 		success: function(data) {
 

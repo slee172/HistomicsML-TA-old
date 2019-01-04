@@ -29,31 +29,21 @@
 //
 //
 
-var application = "";
 var tempUID = "5zeefce763e4d1.18563122";
 
 $(function() {
-
-	application = $_GET("application");
 
 	var	datasetslideSummary = $("#datasetSel"), trainsetSel = $("#trainsetSel"),
 		downloadsetSel = $("#downloadsetSel"), datasetpredictDataset = $("#applyDatasetSel"),
 		datasetpredictSlide = $('#datasetMapSel'), datasetLabel = $("#datasetLabelSel"),
 		maskTrainSel = $('#trainsetLabelSel');
 
-	// document.getElementById("index").setAttribute("href","index.html");
-	document.getElementById("home").setAttribute("href","index.html?application="+application);
-	document.getElementById("viewer").setAttribute("href","viewer.html?application="+application);
-	document.getElementById("nav_reports").setAttribute("href","reports.html?application="+application);
-	document.getElementById("nav_data").setAttribute("href","data.html?application="+application);
-	// document.getElementById("nav_validation").setAttribute("href","validation.html?application="+application);
-
 	// Populate Dataset dropdown
 	//
 	$.ajax({
 		type: "POST",
 		url: "db/getdatasets.php",
-		data: { application: application },
+		data: {},
 		dataType: "json",
 		success: function(data) {
 

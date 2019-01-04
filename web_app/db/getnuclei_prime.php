@@ -39,7 +39,6 @@
 	$bottom = intval($_POST['bottom']);
 	$slide = $_POST['slide'];
 	$trainSet = $_POST['trainset'];
-	$application = $_POST['application'];
 	$boundaryTablename = "sregionboundaries";
 
 	// Get labels for the objects within the viewport
@@ -65,14 +64,8 @@
 		while( $array = mysqli_fetch_row($result) ) {
 			$obj = array();
 
-			if ($application == "cell"){
-				$obj[] = $array[1];
-				$obj[] = $array[2];
-				$obj[] = $array[3];
-			} else{
-				$obj[] = $array[0];
-				$obj[] = $array[1];
-			}
+			$obj[] = $array[0];
+			$obj[] = $array[1];
 
 			$obj[] = "aqua";
 			$obj[] = $array[2];

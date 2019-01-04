@@ -1,5 +1,5 @@
 //
-//	Copyright (c) 2014-2017, Emory University
+//	Copyright (c) 2014-2019, Emory University
 //	All rights reserved.
 //
 //	Redistribution and use in source and binary forms, with or without modification, are
@@ -25,25 +25,13 @@
 //
 //
 var uid = "";
-var application = "";
 var projectDirMain = "";
 var projectDir ="";
 var array_mean = "";
 
 $(function() {
 
-	application = $_GET('application');
 	projectDirMain = "/fastdata/features/";
-
-	$("#applicationSel").val(application);
-	$("#applicationSeldel").val(application);
-
-	// document.getElementById("index").setAttribute("href","index.html");
-	document.getElementById("home").setAttribute("href","index.html?application="+application);
-	document.getElementById("viewer").setAttribute("href","viewer.html?application="+application);
-	document.getElementById("nav_reports").setAttribute("href","reports.html?application="+application);
-	document.getElementById("nav_data").setAttribute("href","data.html?application="+application);
-	// document.getElementById("nav_validation").setAttribute("href","validation.html?application="+application);
 
 	$.ajax({
 		type: "POST",
@@ -64,7 +52,7 @@ $(function() {
 	$.ajax({
 		type: "POST",
 		url: "db/getdatasets.php",
-		data: { application: application },
+		data: {},
 		dataType: "json",
 		success: function(data) {
 
@@ -103,7 +91,7 @@ function updateFeature() {
 		type: "POST",
 		url: "php/data_getdatasetsfromdir.php",
 		data: { projectDir: projectDir,
-						application: application },
+					},
 		dataType: "json",
 		success: function(data) {
 

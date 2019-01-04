@@ -55,7 +55,6 @@ var boundsLeft = 0, boundsRight = 0, boundsTop = 0, boundsBottom = 0;
 
 // 8 boxes used for a deleting function performed when the user double-clicking a box
 var	boxes = ["box_1", "box_2", "box_3", "box_4", "box_5", "box_6","box_7", "box_8"];
-var application = "";
 var scale = 0.5;
 var superpixelSize = 0;
 var iteration = 0;
@@ -66,10 +65,6 @@ var instanceMode = false;
 //
 //
 $(function() {
-
-	application = $_GET("application");
-
-	document.getElementById("prime").setAttribute("href","prime.html?application="+application);
 
 	// Setup the grid slider relative to the window width
 	var width = 0;
@@ -130,9 +125,7 @@ $(function() {
 	viewer.addHandler('animation-finish', function(event) {
 
 		if( displaySeg ) {
-			if (application == "region") {
-				scale = 0.05;
-			}
+			scale = 0.05;
 			if( statusObj.scaleFactor() > scale ) {
 				$('.overlaySvg').css('visibility', 'visible');
 				var centerX = statusObj.dataportLeft() +
@@ -325,10 +318,7 @@ function onImageViewChanged(event) {
 //
 function updateSeg() {
 
-	if (application == "region") {
-		scale = 0.05;
-	}
-
+	scale = 0.05;
 	if( statusObj.scaleFactor() > scale ) {
 
 		var left, right, top, bottom, width, height;
@@ -354,7 +344,6 @@ function updateSeg() {
 					right:	right,
 					top:	top,
 					bottom:	bottom,
-					application: application,
 			},
 
 			success: function(data) {
@@ -379,49 +368,25 @@ function updateSeg() {
           segGrp.setAttribute('id', 'segGrp');
           annoGrp.appendChild(segGrp);
 
-					if (application == "cell"){
-						for( cell in data ) {
-							ele = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 
-							ele.setAttribute('cx', data[cell][1]);
-							ele.setAttribute('cy', data[cell][2]);
-							ele.setAttribute('r', 2);
-							ele.setAttribute('id', 'N' + data[cell][0]);
-							ele.setAttribute('stroke', 'aqua');
-							ele.setAttribute('fill', 'aqua');
+					for( cell in data ) {
+						ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
 
-							segGrp.appendChild(ele);
-						}
+						ele.setAttribute('points', data[cell][0]);
+						ele.setAttribute('id', 'N' + data[cell][1]);
+						ele.setAttribute('stroke', 'aqua');
+						ele.setAttribute("stroke-dasharray", "5,5");
+						ele.setAttribute('fill', 'none');
 
-					} else{
-						for( cell in data ) {
-							ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-
-							ele.setAttribute('points', data[cell][0]);
-							ele.setAttribute('id', 'N' + data[cell][1]);
-							ele.setAttribute('stroke', 'aqua');
-							if (application == "region") {
-								// ele.setAttribute('stroke-width', 4);
-								ele.setAttribute("stroke-dasharray", "5,5");
-							}
-							ele.setAttribute('fill', 'none');
-
-							segGrp.appendChild(ele);
-						}
-
+						segGrp.appendChild(ele);
 					}
 
 					if( selectedJSON['samples'].length > 0 ) {
 						for( i = 0; i < selectedJSON['samples'].length; i++ ) {
 							var bound = document.getElementById("N"+selectedJSON['samples'][i]['id']);
 							if( bound != null ) {
-								if (application == "region") {
-									bound.setAttribute('fill', 'yellow');
-									bound.setAttribute("fill-opacity", "0.2");
-								}
-								else{
-									bound.setAttribute('stroke', 'yellow');
-								}
+								bound.setAttribute('fill', 'yellow');
+								bound.setAttribute("fill-opacity", "0.2");
 							}
 						}
 					}
@@ -503,19 +468,17 @@ function displayThumbNail(){
   var scale_cent = 25;
 	var scale_size = 50.0;
 
-	if (application == "region") {
-		if (superpixelSize == "8") {
-			scale_cent = 18;
-			scale_size = 32.0;
-		}
-		else if (superpixelSize == "16") {
-			scale_cent = 28;
-			scale_size = 60.0;
-		}
-		else {
-			scale_cent = 64;
-			scale_size = 128.0;
-		}
+	if (superpixelSize == "8") {
+		scale_cent = 18;
+		scale_size = 32.0;
+	}
+	else if (superpixelSize == "16") {
+		scale_cent = 28;
+		scale_size = 60.0;
+	}
+	else {
+		scale_cent = 64;
+		scale_size = 128.0;
 	}
 
 
@@ -576,13 +539,8 @@ function updateBoundColors(currentID) {
 
 		if( bound != null ) {
 			if (selectedJSON['samples'][i]['id'] == currentID) {
-				if (application == "region") {
 					bound.setAttribute('fill', 'yellow');
 					bound.setAttribute("fill-opacity", "0.2");
-				}
-				else{
-					bound.setAttribute('stroke', 'yellow');
-				}
 			}
 		}
 	}
@@ -601,12 +559,7 @@ function undoBoundColors(currentID) {
 
 		if( bound != null ) {
 			if (selectedJSON['samples'][i]['id'] == currentID){
-				if (application == "region") {
 					bound.setAttribute('fill', 'none');
-				}
-				else{
-					bound.setAttribute('stroke', 'aqua');
-				}
 			}
 		}
 	}
@@ -623,7 +576,6 @@ function nucleiSelect() {
             data:   { slide:    curSlide,
                       cellX:    Math.round(statusObj.mouseImgX()),
                       cellY:    Math.round(statusObj.mouseImgY()),
-											application: application,
             },
             success: function(data) {
 					if( data !== null ) {
@@ -739,9 +691,7 @@ function onMouseLeave(event) {
 //
 function onMouseClick(event) {
 
-	if (application =="region"){
-		event.preventDefaultAction = true;
-	}
+	event.preventDefaultAction = true;
 	clickCount++;
 	if( clickCount === 1 ) {
 		// If no click within 250ms, treat it as a single click
@@ -834,7 +784,6 @@ function primeSession() {
 		viewJSON['dataset'] = datapath;
 		viewJSON['samples'] = selectedJSON['samples'];
 		viewJSON['iteration'] = iteration;
-		viewJSON['application'] = application;
 
 		$('#primeprogressBar').css("width", '5%');
 
@@ -852,12 +801,11 @@ function primeSession() {
 
 					// slideCenxCenyJson = JSON.parse(data);
 					if (instanceMode) {
-							window.location = "grid.html?application="+application;
+							window.location = "grid.html";
 					}
 					else {
-							window.location = "viewer.html?application="+application;
+							window.location = "viewer.html";
 					}
-					// window.location = "grid.html?application="+application+"&json="+encodeURIComponent(JSON.stringify(data));
 
 				},
 				error: function() {
@@ -879,7 +827,6 @@ function primeSession() {
 		// 		// 	data['samples'][i]['id'] = selectedJSON['samples'][i]['id'];
 		// 		// }
 		//
-		// 		window.location = "grid.html?application="+application+"&json="+encodeURIComponent(JSON.stringify(data));
 		// 		// } else {
 		// 			// TODO - Indicate failure
 		// 		// }
@@ -940,7 +887,7 @@ function cancelSession() {
 		url: "php/cancelSession_nn.php",
 		data: "",
 		success: function() {
-			window.location = "index.html?application="+application;
+			window.location = "index.html";
 		}
 	});
 }

@@ -29,7 +29,6 @@ var curDataset = "";
 var slideSet = {"scores":[], "paths":[]};
 var slideReq = null;
 var uid = null;
-var application = "";
 var datapath = "";
 var reloaded = false;
 var init_reloaded = false;
@@ -43,15 +42,6 @@ var init_reloaded = false;
 //		Register event handlers
 //
 $(function() {
-
-	application = $_GET("application");
-
-	document.getElementById("home").setAttribute("href","index.html?application="+application);
-	document.getElementById("nav_select").setAttribute("href","grid.html?application="+application);
-	document.getElementById("nav_review").setAttribute("href","review.html?application="+application);
-	document.getElementById("viewer").setAttribute("href","viewer.html?application="+application);
-	document.getElementById("nav_heatmaps").setAttribute("href","heatmaps.html?application="+application);
-	// document.getElementById("nav_survival").setAttribute("href","survival.html?application="+application);
 
 	// get slide host info
 	//
@@ -90,7 +80,6 @@ function genHeatmaps() {
 		data: { dataset: curDataset,
 				uid: uid,
 				datapath: datapath,
-				application : application,
 			  },
 		dataType: "json",
 		success: function(data) {
@@ -117,7 +106,6 @@ function genHeatmaps() {
 				viewJSON['target'] = 'heatmap';
 				viewJSON['dataset'] = datapath;
 				viewJSON['slide'] = array_slides[i];
-				viewJSON['application'] = application;
 				viewJSON['width'] = array_x_size[i];
 				viewJSON['height'] = array_y_size[i];
 				viewJSONs['viewJSONs'].push(viewJSON);
@@ -215,7 +203,7 @@ function createRow(rowNo, index) {
 	row.setAttribute('id', 'row'+rowNo);
 	row.setAttribute('class', 'row');
 
-	anchorRef = "viewer.html?application="+application+"&slide="+ slide;
+	anchorRef = "viewer.html?slide="+ slide;
 
 	// 1st column - Uncertainty heatmap
 	col = document.createElement("div");

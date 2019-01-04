@@ -60,11 +60,7 @@
 			mysqli_free_result($result);
 		}
 
-		$application = $_POST['application'];
-		$boundaryTablename = "boundaries";
-	  if ($application == "region"){
-			$boundaryTablename = "sregionboundaries";
-		}
+		$boundaryTablename = "sregionboundaries";
 
 		// Get database id for the sample
 		$sql = 'SELECT id, boundary FROM '.$boundaryTablename.' WHERE slide="'.$response['review'][$i]['slide'].'"';
