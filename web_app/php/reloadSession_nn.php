@@ -73,6 +73,6 @@
 	$_SESSION['reloaded'] = true;
 	$_SESSION['init_reloaded'] = true;
 	$_SESSION['superpixelSize'] = $featureFile[1];
-	header("Location: ../viewer.html?application=".$_POST['applicationreload']);
+	header("Location: ../viewer.html");
 
 ?>

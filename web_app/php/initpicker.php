@@ -122,7 +122,7 @@
 		$_SESSION['dataset'] = $_POST["dataset"];
 		$_SESSION['reloaded'] = false;
 		$_SESSION['iteration'] = 0;
-		header("Location: ../picker.html?application=".$_POST['application']);
+		header("Location: ../picker.html");
 	} else {
 
 		echo "Unable to init session<br>";
