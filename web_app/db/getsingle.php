@@ -1,7 +1,7 @@
 <?php
 
 //
-//	Copyright (c) 2014-2018, Emory University
+//	Copyright (c) 2014-2019, Emory University
 //	All rights reserved.
 //
 //	Redistribution and use in source and binary forms, with or without modification, are
@@ -39,22 +39,14 @@
 	$cellX = floatval($_POST['cellX']);
 	$cellY = floatval($_POST['cellY']);
 	$slide = $_POST['slide'];
-	$application = $_POST['application'];
-	$range = 10;
-
-	if ($application == "region"){
-		$range = 64;
-	}
+	$range = 64;
 
 	$boxLeft = $cellX - $range;
 	$boxRight = $cellX + $range;
  	$boxTop = $cellY - $range;
 	$boxBottom = $cellY + $range;
 
-	$boundaryTablename = "boundaries";
-  if ($application == "region"){
-		$boundaryTablename = "sregionboundaries";
-	}
+	$boundaryTablename = "sregionboundaries";
 	$dbConn = guestConnect();
 
 	$sql = 'SELECT boundary, id, centroid_x, centroid_y, '.
