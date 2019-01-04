@@ -1,7 +1,7 @@
 <?php
 
 //
-//	Copyright (c) 2014-2018, Emory University
+//	Copyright (c) 2014-2019, Emory University
 //	All rights reserved.
 //
 //	Redistribution and use in source and binary forms, with or without modification, are
@@ -32,8 +32,7 @@
 
 
 	$dataset = $_POST['dataset'];
-	$application = $_POST['application'];
-
+	
 	// Get slide info for the dataset from the database
 	//
 	$dbConn = guestConnect();

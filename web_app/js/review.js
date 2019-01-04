@@ -73,16 +73,6 @@ var init_reloaded = false;
 
 $(function() {
 
-	application = $_GET("application");
-
-
-	document.getElementById("home").setAttribute("href","index.html?application="+application);
-	document.getElementById("nav_select").setAttribute("href","grid.html?application="+application);
-	document.getElementById("nav_review").setAttribute("href","review.html?application="+application);
-	document.getElementById("viewer").setAttribute("href","viewer.html?application="+application);
-	document.getElementById("nav_heatmaps").setAttribute("href","heatmaps.html?application="+application);
-	// document.getElementById("nav_survival").setAttribute("href","survival.html?application="+application);
-
 	// get slide host info
 	//
 	$.ajax({
@@ -178,30 +168,24 @@ viewer.addHandler('close', function(event) {
 			sampGrp.setAttribute('id', 'sample');
 			annoGrp.appendChild(sampGrp);
 
-			if (application != "region") {
-				ele = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+			ele = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 
-				ele.setAttribute('x', curX - 50);
-				ele.setAttribute('y', curY - 50);
-				ele.setAttribute('width', 100);
-				ele.setAttribute('height', 100);
-				ele.setAttribute('stroke', 'yellow');
-				ele.setAttribute('fill', 'none');
-				ele.setAttribute('stroke-width', 4);
-				ele.setAttribute('id', 'boundBox');
+			ele.setAttribute('x', curX - 50);
+			ele.setAttribute('y', curY - 50);
+			ele.setAttribute('width', 100);
+			ele.setAttribute('height', 100);
+			ele.setAttribute('stroke', 'yellow');
+			ele.setAttribute('fill', 'none');
+			ele.setAttribute('stroke-width', 4);
+			ele.setAttribute('id', 'boundBox');
 
-				sampGrp.appendChild(ele);
-			}
-
+			sampGrp.appendChild(ele);
 
 			ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
 			ele.setAttribute('points', boundaries[cur_box]);
 			ele.setAttribute('id', 'boundary');
 			ele.setAttribute('stroke', 'yellow');
-			if (application == "region"){
-				ele.setAttribute('stroke-width', 4);
-			}
-
+			ele.setAttribute('stroke-width', 4);
 			ele.setAttribute('fill', 'none');
 			if( boundaryOn ) {
 				ele.setAttribute('visibility', 'visible');
@@ -262,7 +246,6 @@ function genReview(samples) {
     url: "php/reviewSamples_nn.php",
 		data: {
 			samples: JSON.stringify(samples),
-			application: application
 		},
     dataType: "json",
     success: function(data) {
@@ -647,19 +630,17 @@ function displayOneslide(sampleArray, slide_num){
 		var scale_cent = 25.0;
 		var scale_size = 50.0;
 
-		if (application == "region"){
-			if (superpixelSize == "8") {
-				scale_cent = 18;
-				scale_size = 32.0;
-			}
-			else if (superpixelSize == "16") {
-				scale_cent = 36;
-				scale_size = 64.0;
-			}
-			else {
-				scale_cent = 64;
-				scale_size = 128.0;
-			}
+		if (superpixelSize == "8") {
+			scale_cent = 18;
+			scale_size = 32.0;
+		}
+		else if (superpixelSize == "16") {
+			scale_cent = 36;
+			scale_size = 64.0;
+		}
+		else {
+			scale_cent = 64;
+			scale_size = 128.0;
 		}
 
 		centX = (sampleArray[sample]['centX'] - (scale_cent * scale)) / sampleArray[sample]['maxX'];
