@@ -29,13 +29,14 @@
 
 	require '../db/accounts.php';
 	require 'hostspecs.php';
+	require '../db/logging.php';
 
 	$deleteDatasetSel = $_POST['deleteDatasetSel'];
 
 	/************	Start existing dataset and slide name check ************/
 	// dataset name check
 
-	$dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
+	$dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
 
 	if( !$dbConn ) {
 		echo("<p>Unable to connect to the database server</p>" . mysqli_connect_error() );
