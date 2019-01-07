@@ -172,7 +172,7 @@
 			<div class="row top-buffer"></div>
 
 			<div class="row">
-				<input type="button" id="resetBtn" value="Reset Session" class="btn btn-danger" onClick="resetAlServer()">
+				<input type="button" id="resetBtn" value="Reset Session" class="btn btn-danger" onClick="cancelSession()">
 			</div>
 		</div>
 
@@ -188,6 +188,25 @@
 
 					<div class="modal-body">
 						Please wait while the dataset is loaded
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="cancelDiag" tabindex="-1" role="dialog"
+			aria-labelledby="myCancelLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="myCancelLabel">
+							Cancel Current Session
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="progress progress-popup">
+				 		<div class="progress-bar" id="cancelprogressBar"></div>
+						</div>
+						Please wait while current session is canceled
 					</div>
 				</div>
 			</div>

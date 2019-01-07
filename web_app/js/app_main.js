@@ -56,12 +56,14 @@ $(function() {
 			negClass = data['negClass'];
 			curDataset = data['dataset'];
 			IIPServer = data['IIPServer'];
+			datapath = data['datapath'];
 			superpixelSize = data['superpixelSize'];
 
 			if( uid === null ) {
 				$('#nav_select').hide();
 				$('#nav_heatmaps').hide();
 				$('#nav_review').hide();
+				$('#resetBtn').hide();
 				// $('#nav_survival').hide();
 
 			} else {
@@ -81,6 +83,7 @@ $(function() {
 				$('#nav_reports').hide();
 				$('#nav_data').hide();
 				// $('#nav_validation').hide();
+				$('#resetBtn').show();
 
 				// TODO - Populate the text fields with the session values.
 				// This way we can see the criteria for the
@@ -235,9 +238,34 @@ function displayProg() {
 //
 // }
 
+function cancelSession() {
 
-function resetAlServer() {
+	$('#cancelDiag').modal('show');
+	$('#cancelprogressBar').css("width", '50%');
 
+	var target = "cancel";
+
+	$.ajax({
+		type: "POST",
+		url: '/model/model/cancel',
+		dataType: "json",
+		data: {
+						uid: uid,
+						target: target,
+						dataset: datapath
+		},
+		success: function(data) {
+
+			$('#cancelprogressBar').css("width", '80%');
+			cancel();
+
+		}
+	});
+
+}
+
+
+function cancel() {
 	$.ajax({
 		url: "php/cancelSession_nn.php",
 		data: "",
@@ -245,8 +273,8 @@ function resetAlServer() {
 			window.location = "index.html";
 		}
 	});
-
 }
+
 //
 // Retruns the value of the GET request variable specified by name
 //
