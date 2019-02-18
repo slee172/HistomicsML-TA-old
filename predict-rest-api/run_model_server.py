@@ -9,7 +9,7 @@ import mysql.connector
 from copy import copy
 from time import time
 from scipy.misc import imsave
-from keras.utils.np_utils import to_categorical
+# from keras.utils.np_utils import to_categorical
 
 # inner functions
 import init
@@ -155,11 +155,8 @@ def run():
                 scores = model.predict_prob(dset.features)
                 t1 = time()
                 print "Predict took ", t1 - t0
-                print "Find uncertain samples ..."
-                t0 = time()
+                # Find uncertain samples
                 data = select.getData(scores, dset.slideIdx, dset.slides, dset.x_centroid, dset.y_centroid)
-                t1 = time()
-                print "Uncertain sample took ", t1 - t0
                 db.set(q_uid, json.dumps(data))
                 db.ltrim(set.REQUEST_QUEUE, len(q_uid), -1)
 
@@ -275,8 +272,7 @@ def run():
                     train_features[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['feature']
                     train_labels[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['label']
 
-                train_labels = to_categorical(train_labels, num_classes=2)
-
+                # train_labels = to_categorical(train_labels, num_classes=2)
                 tset_path = t_path.split('/')[-1]
                 tset_name = tset_path.split('.')[0]
 
@@ -310,8 +306,7 @@ def run():
                     train_features[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['feature']
                     train_labels[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['label']
 
-                train_labels = to_categorical(train_labels, num_classes=2)
-
+                # train_labels = to_categorical(train_labels, num_classes=2)
                 print "Training ... ", len(train_labels)
                 t0 = time()
                 model.train_model(train_features, train_labels, report_label.classifier)
@@ -435,8 +430,7 @@ def run():
                     train_features[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['feature']
                     train_labels[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['label']
 
-                train_labels = to_categorical(train_labels, num_classes=2)
-
+                # train_labels = to_categorical(train_labels, num_classes=2)
                 print "Training ... ", len(train_labels)
                 t0 = time()
                 model.train_model(train_features, train_labels, report_count.classifier)
@@ -509,8 +503,7 @@ def run():
                     train_features[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['feature']
                     train_labels[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['label']
 
-                train_labels = to_categorical(train_labels, num_classes=2)
-
+                # train_labels = to_categorical(train_labels, num_classes=2)
                 print "Training ... ", len(train_labels)
                 t0 = time()
                 model.train_model(train_features, train_labels, report_map.classifier)
@@ -670,8 +663,7 @@ def run():
                     train_features[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['feature']
                     train_labels[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['label']
 
-                train_labels = to_categorical(train_labels, num_classes=2)
-
+                # train_labels = to_categorical(train_labels, num_classes=2)
                 if tset_name is None:
                     tset_name = t_train.classifier
 
@@ -784,8 +776,7 @@ def run():
                     train_features[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['feature']
                     train_labels[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['label']
 
-                train_labels = to_categorical(train_labels, num_classes=2)
-
+                # train_labels = to_categorical(train_labels, num_classes=2)
                 if tset_name is None:
                     tset_name = retrain_v.classifier
 
@@ -919,8 +910,7 @@ def run():
                     train_features[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['feature']
                     train_labels[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['label']
 
-                train_labels = to_categorical(train_labels, num_classes=2)
-
+                # train_labels = to_categorical(train_labels, num_classes=2)
                 if tset_name is None:
                     tset_name = retrain_h.classifier
 
