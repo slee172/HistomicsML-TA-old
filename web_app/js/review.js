@@ -445,9 +445,9 @@ function slidesInfo() {
 	row = document.createElement("div");
 	row.setAttribute('class','row');
 	row.innerHTML = "<font size=3> <b> Total slides : </b> " + totalNumofSlides + " <br>" +
-		"<b> Total cells : </b> " + totalNumofCells + " <br>" +
-		"<b> Total positive cells : </b> " + totalNumofPositive + " <br>" +
-		"<b> Total negative cells : </b> " + totalNumfofNegative;
+		"<b> Total superpixels : </b> " + totalNumofCells + " <br>" +
+		"<b> Total positive superpixels : </b> " + totalNumofPositive + " <br>" +
+		"<b> Total negative superpixels : </b> " + totalNumfofNegative;
 	container.appendChild(row);
 
 }
