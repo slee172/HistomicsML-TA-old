@@ -205,7 +205,7 @@ function createRow(rowNo, index) {
 	col.appendChild(ele);
 	ele = document.createElement("p");
 	ele.setAttribute('id', 'stats_'+rowNo);
-	ele.innerHTML = "Median uncertainty: " + slideSet['scores'][index]['uncertMedian'].toFixed(4) +
+	ele.innerHTML = "High Uncertain Percentage: " + slideSet['scores'][index]['uncertMedian'].toFixed(4) +
 					"</br>Max Uncertainty: " + slideSet['scores'][index]['uncertMax'].toFixed(4) +
 					"</br>Max class density: " + slideSet['scores'][index]['classMax'].toFixed(4);
 
