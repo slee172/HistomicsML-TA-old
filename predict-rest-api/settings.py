@@ -13,10 +13,9 @@ class Settings():
         self.REQUEST_END = 100
         self.SLEEP = 0.5
 
+        # initialize datasets
         self.FEATURE_DIM = 64
         self.IS_HEATMAP = False
         self.TRAININGSET_DIR = "/localdata/classifiers/"
         self.DATASET_DIR = "/fastdata/features/"
-        # set special Features
-        # self.PATH_TO_SPECIAL = "/fastdata/features/BRCA/BRCA-spfeatures-46-24-01.h5"
-        self.PATH_TO_SPECIAL = "/fastdata/features/SKCM/SKCM-spfeatures-48-11-01.h5"
+        self.PATH_TO_SPECIAL = "/fastdata/features/BRCA/BRCA-spfeatures-1.h5"
