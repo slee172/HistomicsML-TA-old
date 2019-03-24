@@ -46,7 +46,7 @@
 
 	// check if dataset name exists
 	// $dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
-	$dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
+	$dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
 
 	if( !$dbConn ) {
 		echo("<p>Unable to connect to the first database server</p>" . mysqli_connect_error() );
