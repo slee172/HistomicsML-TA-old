@@ -1,0 +1,165 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Importing datasets &#8212; HistomicsML-TA 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Formatting datasets" href="data-format.html" />
+    <link rel="prev" title="Exporting results" href="reports.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="importing-datasets">
+<h1>Importing datasets<a class="headerlink" href="#importing-datasets" title="Permalink to this headline">¶</a></h1>
+<p>A data import interface is provided to help users import new datasests into HistomicsML. This page demonstrates the data import function using the sample data located in the database container.</p>
+<p>The whole-slide image and the boundary, feature, and slide information files are located in separate folders on the database container</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>/fastdata/features/BRCA/
+│
+├── BRCA-boundaries-1.txt
+│
+├── BRCA-features-1.h5
+│
+└── BRCA-pyramids-1.csv
+
+/localdata/pyramids/BRCA/
+│
+└── TCGA-3C-AALJ-01Z-00-DX1.svs.dzi.tif
+</pre></div>
+</div>
+<p>The following steps, the interface is used to import this dataset into this system</p>
+<ol class="arabic simple">
+<li>Create a folder on the container and modify permissions to enable import</li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ docker <span class="nb">exec</span> -t -i hml bash
+root@19cd8ef3e1ec:/# <span class="nb">cd</span> /fastdata/features
+root@19cd8ef3e1ec:/fastdata/features# mkdir NewProjectDirectory
+root@19cd8ef3e1ec:/fastdata/features# chmod <span class="m">777</span> NewProjectDirectory
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li>Copy the sample data to <code class="docutils literal"><span class="pre">NewProjectDirectory</span></code></li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>root@19cd8ef3e1ec:/fastdata/features# <span class="nb">cd</span> NewProjectDirectory
+root@19cd8ef3e1ec:/fastdata/features/NewProjectDirectory# cp ../BRCA/* ./
+<span class="c1"># This copies BRCA-boundaries-1.txt, GBM-features-1.h5, BRCA-pyramids-1.csv to NewProjectDirectory</span>
+root@97d439b58033:/fastdata/features/NewProjectDirectory# mkdir BoundaryDirectory
+root@97d439b58033:/fastdata/features/NewProjectDirectory# mv BRCA-boundaries-1.txt BoundaryDirectory/
+<span class="c1"># This moves the sample boundary file to BoundaryDirectory under NewProjectDirectory</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li>Import dataset using the web interface</li>
+</ol>
+<ul class="simple">
+<li>Open the web page <a class="reference external" href="http://localhost/HistomicsML/data.html">http://localhost/HistomicsML/data.html</a></li>
+<li>Enter a dataset name and select <code class="docutils literal"><span class="pre">NewProjectDirectory</span></code> from the Project Directory dropdown.</li>
+<li>The remaining fields will automatically populate once the directory is selected.</li>
+</ul>
+<img alt="_images/import.png" src="_images/import.png" />
+<ul class="simple">
+<li>Click Submit to confirm the import</li>
+</ul>
+<p>Now, you can see the new dataset on the main page, <a class="reference external" href="http://localhost/HistomicsML">http://localhost/HistomicsML</a>.</p>
+<img alt="_images/import-complete.png" src="_images/import-complete.png" />
+<p>The import interface can also be used to delete an existing dataset from the system</p>
+<ul class="simple">
+<li>To delete the current dataset, go to <a class="reference external" href="http://localhost/HistomicsML/data.html">http://localhost/HistomicsML/data.html</a> and select the current dataset from the dropdown on the top right, and then click Remove button.</li>
+</ul>
+<p>See the data formats section for detailed information on HistomicsML-TA data formats.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">HistomicsML-TA</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example.html">Training a classifier</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reports.html">Exporting results</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Importing datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-format.html">Formatting datasets</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="reports.html" title="previous chapter">Exporting results</a></li>
+      <li>Next: <a href="data-format.html" title="next chapter">Formatting datasets</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Sanghoon Lee.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/data-import.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

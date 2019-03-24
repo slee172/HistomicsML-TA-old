@@ -1,0 +1,124 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Exporting results &#8212; HistomicsML-TA 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Importing datasets" href="data-import.html" />
+    <link rel="prev" title="Training a classifier" href="example.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="exporting-results">
+<h1>Exporting results<a class="headerlink" href="#exporting-results" title="Permalink to this headline">¶</a></h1>
+<p>The Reports interface can be used to apply classifiers to datasets and to generate object-level and slide-level prediction results for download.</p>
+<div class="section" id="report-with-training-dataset">
+<h2>Report with training dataset<a class="headerlink" href="#report-with-training-dataset" title="Permalink to this headline">¶</a></h2>
+<p>The Reports menu provides four different types of exports:
+* Predict (mask): Generates a predicted image .png showing the positive and negative objects in each slide.
+* Slide level summary: Generates a summary .csv describing the number of positive and negative objects in each slide.
+* Download a training set: a training set. (.h5)
+* Predict (dataset): Generates an .h5 binary file describing object-level classifications, prediction scores, centroids, and slide mapping for each object in the dataset.</p>
+<p>See the data formats page for more information on the .h5 contents and prediction score interpretations.</p>
+<img alt="_images/report-1.png" src="_images/report-1.png" />
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">HistomicsML-TA</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example.html">Training a classifier</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Exporting results</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#report-with-training-dataset">Report with training dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-import.html">Importing datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-format.html">Formatting datasets</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="example.html" title="previous chapter">Training a classifier</a></li>
+      <li>Next: <a href="data-import.html" title="next chapter">Importing datasets</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Sanghoon Lee.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/reports.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
