@@ -45,7 +45,6 @@
 	}
 
 	// check if dataset name exists
-	// $dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
 	$dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
 
 	if( !$dbConn ) {
@@ -76,8 +75,7 @@
 
 	/************	Start checking and removing slide name for boundaries ************/
 
-$dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
-// $dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
+	$dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
 	if( !$dbConn ) {
 		echo("<p>Unable to connect to the database server</p>" . mysqli_connect_error() );
 		exit;
@@ -106,8 +104,7 @@ $dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
 	// remove duplicated slides from sregionboundaries
 	// dataset name check
 
-	$dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
-	// $dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
+	$dbConn = mysqli_connect($dbAddress, $guestAccount, $guestPass, "nuclei");
 	if( !$dbConn ) {
 		echo("<p>Unable to connect to the database server</p>" . mysqli_connect_error() );
 		exit;
@@ -128,7 +125,7 @@ $dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
 	$newslidelist = array();
 	$link = mysqli_init();
 	mysqli_options($link, MYSQLI_OPT_LOCAL_INFILE, true);
-	mysqli_real_connect($link, "localhost", $guestAccount, $guestPass, "nuclei");
+	mysqli_real_connect($link, $dbAddress, $guestAccount, $guestPass, "nuclei");
 
 	$sql = 'SELECT name, id FROM slides';
 
@@ -154,13 +151,14 @@ $dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
 		exit;
 	}
 
+
 	/************	End existing slide name check ************/
 	// if new slide list exists, import slide information
 	// this should be fixed later if new slide includes current slides.
 	if(count($newslidelist) > 0){
 		$link = mysqli_init();
 		mysqli_options($link, MYSQLI_OPT_LOCAL_INFILE, true);
-		mysqli_real_connect($link, "localhost", $guestAccount, $guestPass, "nuclei");
+		mysqli_real_connect($link, $dbAddress, $guestAccount, $guestPass, "nuclei");
 
 		$sql = 'LOAD DATA LOCAL INFILE "'.$projectDirectory.'/'.$slideInfoFile.'"
 				INTO TABLE slides fields terminated by \',\' lines
@@ -178,16 +176,18 @@ $dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
 	}
 
 	if( file_exists($projectDirectory.'/slidelist.txt') ) {
-		$cmd = 'rm '.$projectDirectory.'/slidelist.txt';
+		$cmd = '/bin/rm '.$projectDirectory.'/slidelist.txt';
 		exec($cmd, $output, $result);
 	}
 
 	// create a slide list
-	$cmd = 'cd ../scripts && '.'./gen_slide_list.sh '.$projectDirectory.'/'.$slideInfoFile.' '.$projectDirectory.'/slidelist.txt';
+	$cmd = '/bin/bash ./gen_slide_list.sh '.$projectDirectory.'/'.$slideInfoFile.' '.$projectDirectory.'/slidelist.txt';
+	// $cmd = '/bin/bash ../scripts/gen_slide_list.sh '.$projectDirectory.'/'.$slideInfoFile.' '.$projectDirectory.'/slidelist.txt';
 	exec($cmd, $output, $result);
+	// $cmd = exec('/bin/bash ./gen_slide_list.sh /fastdata/features/BRCA/BRCA-pyramids-1.csv /fastdata/features/BRCA/slidelist.txt', $output, $result);
 
 	if( $result != 0 ) {
-		echo "<script type='text/javascript'>window.alert('Slidelist: Cannot create slide list');
+		echo "<script type='text/javascript'>window.alert('Cannot create slide list');
 		window.location.href = '../data.html';</script>";
 		exit;
 	}
@@ -197,7 +197,7 @@ $dbConn = mysqli_connect("localhost", $guestAccount, $guestPass, "nuclei");
 	$out = $guestAccount.' '.$guestPass.' '.$datasetName.' '.$_POST['project'].'/'.$featureFile.' '.$projectDirectory.'/slidelist.txt';
 
 	// add datasets and dataset_slides tables
-	$result = shell_exec('python ../scripts/create_dataset_importtab.py '.escapeshellarg("localhost").' '.escapeshellarg($guestAccount).' '.escapeshellarg($guestPass).' '.escapeshellarg($datasetName).' '.$_POST['project'].'/'.escapeshellarg($featureFile).' '.escapeshellarg($projectDirectory.'/slidelist.txt'));
+	$result = shell_exec('python ../scripts/create_dataset_importtab.py '.escapeshellarg($dbAddress).' '.escapeshellarg($guestAccount).' '.escapeshellarg($guestPass).' '.escapeshellarg($datasetName).' '.$_POST['project'].'/'.escapeshellarg($featureFile).' '.escapeshellarg($projectDirectory.'/slidelist.txt'));
 
 	write_log("INFO"," Directory".$out);
 
