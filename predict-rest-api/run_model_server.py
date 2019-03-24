@@ -347,7 +347,7 @@ def run():
                 )[0]
 
                 mydb = mysql.connector.connect(
-                  host="localhost",
+                  host=set.MYSQL_HOST,
                   user="guest",
                   passwd="guest",
                   database="nuclei",

@@ -6,6 +6,7 @@ class Settings():
         self.REDIS_HOST = "localhost"
         self.REDIS_PORT = 6379
         self.REDIS_DB = 0
+        self.MYSQL_HOST = "172.17.0.5"
 
         # initialize constants
         self.REQUEST_QUEUE = "request_queue"
@@ -18,4 +19,5 @@ class Settings():
         self.IS_HEATMAP = False
         self.TRAININGSET_DIR = "/localdata/classifiers/"
         self.DATASET_DIR = "/fastdata/features/"
-        self.PATH_TO_SPECIAL = "/fastdata/features/BRCA/BRCA-spfeatures-1.h5"
+        self.PATH_TO_SPECIAL = "/fastdata/features/BRCA/BRCA-spfeatures-46-24-01.h5"
+      # self.PATH_TO_SPECIAL = "/fastdata/features/SKCM/SKCM-spfeatures-48-11-01.h5"
