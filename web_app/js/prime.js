@@ -848,7 +848,7 @@ function setSelectMode() {
 	var	selBtn = $('#selBtn');
 	if( selectNuc ) {
 		// Currently selecting nuclei, stop
-		selBtn.val("Select Nuclei");
+		selBtn.val("Select Superpixels");
 		selBtn.css('color', 'white');
 		selectNuc = false;
 		$('#instruct').text("");
