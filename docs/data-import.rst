@@ -38,12 +38,9 @@ The following steps, the interface is used to import this dataset into this syst
 .. code-block:: bash
 
   root@19cd8ef3e1ec:/fastdata/features# cd NewProjectDirectory
-  root@19cd8ef3e1ec:/fastdata/features/NewProjectDirectory# cp ../BRCA/* ./
+  root@19cd8ef3e1ec:/fastdata/features/NewProjectDirectory# cp -R ../BRCA/* ./
   # This copies BRCA-boundaries-1.txt, GBM-features-1.h5, BRCA-pyramids-1.csv to NewProjectDirectory
-  root@97d439b58033:/fastdata/features/NewProjectDirectory# mkdir BoundaryDirectory
-  root@97d439b58033:/fastdata/features/NewProjectDirectory# mv BRCA-boundaries-1.txt BoundaryDirectory/
-  # This moves the sample boundary file to BoundaryDirectory under NewProjectDirectory
-
+  
 4. Import dataset using the web interface
 
 * Open the web page http://localhost/HistomicsML/data.html
