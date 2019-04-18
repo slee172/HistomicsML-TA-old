@@ -306,22 +306,15 @@ def run():
                     train_features[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['feature']
                     train_labels[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['label']
 
-                # train_labels = to_categorical(train_labels, num_classes=2)
-                print "Training ... ", len(train_labels)
-                t0 = time()
-                model.train_model(train_features, train_labels, report_label.classifier)
-                t1 = time()
-                print "Training took ", t1 - t0
-
                 slide_idx = dset.getSlideIdx(report_label.slide)
                 object_num = dset.getObjNum(slide_idx)
                 data_idx = dset.getDataIdx(slide_idx)
                 test_features = dset.getFeatureSet(data_idx, object_num)
                 x_centroid_set = dset.getXcentroidSet(data_idx, object_num)
                 y_centroid_set = dset.getYcentroidSet(data_idx, object_num)
-                print "Testing Start ... "
+
                 t0 = time()
-                predicts = model.predict(test_features)
+                predicts = model.train_and_predict(train_features, train_labels, test_features)
                 t1 = time()
                 print "Predict took ", t1 - t0
 
@@ -415,6 +408,7 @@ def run():
                 agen = augments.Augments()
                 # set user train samples
                 # uset.setReloadedData(uidx, report_count.trainSet, dset.slides)
+                print report_count.trainSet
                 uset.setReloadedData(uidx, report_count.trainSet)
 
                 sample_size = len(uset.users[uidx]['samples'])
@@ -430,16 +424,8 @@ def run():
                     train_features[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['feature']
                     train_labels[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['label']
 
-                # train_labels = to_categorical(train_labels, num_classes=2)
-                print "Training ... ", len(train_labels)
                 t0 = time()
-                model.train_model(train_features, train_labels, report_count.classifier)
-                t1 = time()
-                print "Training took ", t1 - t0
-
-                print "Testing Start ... "
-                t0 = time()
-                predicts = model.predict(dset.features)
+                predicts = model.train_and_predict(train_features, train_labels, dset.features)
                 t1 = time()
                 print "Predict took ", t1 - t0
 
@@ -489,6 +475,7 @@ def run():
                 agen = augments.Augments()
                 # set user train samples
                 uset.setReloadedData(uidx, report_map.trainSet)
+                print report_map.trainSet
 
                 sample_size = len(uset.users[uidx]['samples'])
                 sample_batch_size = agen.AUG_BATCH_SIZE * sample_size
@@ -503,13 +490,6 @@ def run():
                     train_features[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['feature']
                     train_labels[i+sample_size:i+sample_size+agen.AUG_BATCH_SIZE] = uset.users[uidx]['augments'][i]['label']
 
-                # train_labels = to_categorical(train_labels, num_classes=2)
-                print "Training ... ", len(train_labels)
-                t0 = time()
-                model.train_model(train_features, train_labels, report_map.classifier)
-                t1 = time()
-                print "Training took ", t1 - t0
-
                 slide_idx = dset.getSlideIdx(report_map.slide)
                 object_num = dset.getObjNum(slide_idx)
                 data_idx = dset.getDataIdx(slide_idx)
@@ -517,9 +497,8 @@ def run():
                 x_centroid_set = dset.getXcentroidSet(data_idx, object_num)
                 y_centroid_set = dset.getYcentroidSet(data_idx, object_num)
 
-                print "Testing Start ... "
                 t0 = time()
-                predicts = model.predict(test_features)
+                predicts = model.train_and_predict(train_features, train_labels, test_features)
                 t1 = time()
                 print "Predict took ", t1 - t0
 
@@ -780,11 +759,6 @@ def run():
                 if tset_name is None:
                     tset_name = retrain_v.classifier
 
-                t0 = time()
-                model.train_model(train_features, train_labels, tset_name)
-                t1 = time()
-                print "Training took ", t1 - t0, " ", len(train_labels), "Samples"
-
                 slide_idx = dset.getSlideIdx(retrain_v.slide)
                 object_num = dset.getObjNum(slide_idx)
                 data_idx = dset.getDataIdx(slide_idx)
@@ -792,9 +766,8 @@ def run():
                 x_centroid_set = dset.getXcentroidSet(data_idx, object_num)
                 y_centroid_set = dset.getYcentroidSet(data_idx, object_num)
 
-                print "Testing Start ... "
                 t0 = time()
-                predictions = model.predict(feature_set)
+                predicts = model.train_and_predict(train_features, train_labels, feature_set)
                 t1 = time()
                 print "Predict took ", t1 - t0
 

@@ -52,3 +52,9 @@ class Network():
 			self.model.load_weights("./checkpoints/" + self.classifier + ".h5")
 			predicts = self.model.predict_classes(features, batch_size=self.batch_size)[:, 0]
 			return predicts
+
+	def train_and_predict(self, train_features, train_labels, test_features):
+
+		self.model.fit(train_features, train_labels, epochs=self.epochs)
+		predicts = self.model.predict_classes(test_features, batch_size=self.batch_size)[:, 0]
+		return predicts
